@@ -1,6 +1,6 @@
 # Qualidade do ar — análise histórica
 
-Ferramenta de pesquisa de Eduardo para análise histórica rastreável de sensores em uma escola e em ambiente hospitalar. Versão **0.1.0**, primeira implementação funcional; avaliação científica e aplicação com dados reais pendentes.
+Ferramenta de pesquisa de Eduardo para análise histórica rastreável de sensores em uma escola e em ambiente hospitalar. Versão **0.1.1**, primeira implementação funcional com correção do conector ISEQ; avaliação científica e aplicação com dados reais pendentes.
 
 **[Abrir a aplicação](https://edukarnopp3.github.io/qualidade-ar-pesquisa/)** · [Estado da entrega](docs/EXECUCAO.md) · [Plano de pesquisa e software](docs/pesquisa/PLANO.md)
 

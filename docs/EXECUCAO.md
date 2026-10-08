@@ -30,6 +30,12 @@ Evidências em `docs/evidencias/`. Elas usam somente dados sintéticos.
 
 A publicação funcional não resolve as pendências de acesso real à ISEQ, validação metrológica, referências aplicáveis ou avaliação acadêmica listadas abaixo.
 
+## Correção 0.1.1 — contexto do fetch
+
+Eduardo reportou `Failed to execute 'fetch' on 'Window': Illegal invocation` ao iniciar o login ISEQ. O conector guardava a função nativa em uma propriedade e a chamava como método da instância `IseqClient`; o navegador recebia um contexto inválido. O `fetch` é agora vinculado ao contexto global antes de ser armazenado. A correção mantém o contrato de URLs, autenticação e aquisição histórica.
+
+Esta falha era anterior a qualquer resposta do backend e não demonstra erro na senha. A autenticação real e a obtenção de históricos continuam dependendo da disponibilidade do serviço e da conta do pesquisador. O registro da publicação da versão corrigida será acrescentado após sua conclusão.
+
 ## Pendências científicas e operacionais
 
 1. Obter a primeira consulta histórica real na ISEQ, com autenticação da conta do pesquisador. Nenhuma credencial foi solicitada em chat nem incorporada ao código.

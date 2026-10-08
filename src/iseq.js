@@ -5,7 +5,9 @@ export class IseqClient {
     const url = new URL(base);
     if (url.protocol !== 'https:' && !(url.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(url.hostname))) throw new Error('Use HTTPS ou um backend local em localhost.');
     if (url.username || url.password || url.search || url.hash) throw new Error('Use apenas a URL base do backend, sem credenciais ou parâmetros.');
-    this.base = base.replace(/\/+$/, ''); this.fetcher = fetcher;
+    this.base = base.replace(/\/+$/, '');
+    // Window.fetch requires the browser global as its receiver, not this client.
+    this.fetcher = fetcher.bind(globalThis);
   }
   async request(path, options = {}) {
     const response = await this.fetcher(`${this.base}${path}`, { ...options, headers: { 'Content-Type': 'application/json', ...(this.#token ? { Authorization: `Bearer ${this.#token}` } : {}), ...options.headers } });

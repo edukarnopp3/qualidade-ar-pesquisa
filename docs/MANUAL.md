@@ -1,4 +1,4 @@
-# Manual da versão 0.1.0
+# Manual da versão 0.1.1
 
 1. Abra a aplicação e escolha importar uma planilha, obter histórico ISEQ, reabrir um pacote ou explorar a demonstração.
 2. Confira aba, data, parâmetros, sensor, ambiente, fuso e unidades. Intervalo nominal depende do instrumento; deixe pendente quando desconhecido. Marque arquivos sintéticos como demonstração.

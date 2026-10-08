@@ -1,5 +1,9 @@
 # Histórico
 
+## 0.1.1 — 08/10/2026
+
+Corrigida a chamada do `fetch` nativo no conector ISEQ. A função estava armazenada e chamada como método do cliente, recebendo a instância como contexto; no navegador isso produzia `Illegal invocation` antes de enviar a requisição. O transporte agora mantém o contexto global correto. Atualizada a versão visível e registrada a correção em docs/EXECUCAO.md.
+
 ## 0.1.0 — 08/10/2026
 
 Primeira implementação do plano aprovado. Código autoral separado do beta; análise local por workers; identificação de casos/sensores; importador amplo/longo; qualidade e decisões; gráficos com lacunas; regras explícitas; PDF/tabelas/pacotes; temas Nexo; conector histórico ISEQ em memória; demonstrações sintéticas; testes e build.
