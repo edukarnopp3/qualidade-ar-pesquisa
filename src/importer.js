@@ -12,7 +12,9 @@ export async function readInput(file) {
     if (new Set(headers).size !== headers.length) throw new Error(`A aba ${name} tem cabeçalhos duplicados. Corrija a exportação para preservar a origem de cada coluna.`);
     const rows = array.map(values => Object.fromEntries(headers.map((h, i) => [h, values[i] ?? null])));
     if (rows.length > 250000) throw new Error('O limite desta versão é 250 mil linhas por aba. Divida o período.');
-    return { name, headers, rows, mapping: inferMapping(headers) };
+    const mapping = inferMapping(headers);
+    if (mapping.sensor && new Set(rows.map(r => String(r[mapping.sensor] ?? '').trim()).filter(Boolean)).size > 1) throw new Error(`A aba ${name} contém identificadores de vários sensores. Separe a exportação por sensor para preservar os casos.`);
+    return { name, headers, rows, mapping };
   });
   const best = sheets.find(s => s.name === 'Dados brutos') || sheets.find(s => s.name === 'Dados') || sheets.find(s => s.mapping.date) || sheets[0];
   if (!best?.rows.length) throw new Error('A planilha selecionada não contém linhas de dados.');

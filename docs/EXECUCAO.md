@@ -12,7 +12,7 @@ A tela inicial abre vazia. O exemplo gera sete dias sintéticos em dois casos, s
 
 ## Verificações realizadas
 
-- 21 testes automatizados de cálculo, importação, referências, pacotes, exportação e contrato ISEQ, com dados controlados; zero falhas na execução registrada.
+- 24 testes automatizados de cálculo, importação, referências, pacotes, exportação e contrato ISEQ, com dados controlados; zero falhas na execução registrada.
 - Build de produção concluído. Bibliotecas maiores são carregadas por função; a entrada inicial tem aproximadamente 64 kB de JavaScript antes de compressão.
 - Interface no navegador: importação de Excel sintético; confirmação de sensor/unidades/fuso; qualidade com conflitos; média diária/horária; referência didática; decisão manual; PDF; download e reabertura de pacote sem recalcular; tema claro/escuro; 390 px sem transbordamento horizontal; logs de erro vazios nos fluxos inspecionados.
 - PDF gerado pela interface renderizado com Poppler e inspecionado. O aviso local de fonte Symbol não produziu defeito visível na página conferida.
