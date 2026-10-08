@@ -2,6 +2,8 @@
 
 Ferramenta de pesquisa de Eduardo para análise histórica rastreável de sensores em uma escola e em ambiente hospitalar. Versão **0.1.0**, primeira implementação funcional; avaliação científica e aplicação com dados reais pendentes.
 
+**[Abrir a aplicação](https://edukarnopp3.github.io/qualidade-ar-pesquisa/)** · [Estado da entrega](docs/EXECUCAO.md) · [Plano de pesquisa e software](docs/pesquisa/PLANO.md)
+
 ## Executar
 
 Requer Node.js 22.12 ou superior. No Windows, abra `Iniciar.cmd`, ou execute:
@@ -35,6 +37,7 @@ Não inclua credenciais no Git ou nos pacotes. Esta entrega testou o conector co
 ## Documentação
 
 - [Execução, estado e pendências](docs/EXECUCAO.md)
+- [Plano integrado de pesquisa e software](docs/pesquisa/PLANO.md)
 - [Método computacional](docs/METODO.md)
 - [Interface e tokens Nexo](docs/DESIGN-SYSTEM.md)
 - [Manual de uso](docs/MANUAL.md)
@@ -54,6 +57,6 @@ As verificações desta versão cobrem exemplos independentes pequenos, erros de
 
 ## Publicação
 
-O projeto está preparado para GitHub Pages com arquivos estáticos e base relativa. A automação em `.github/workflows/pages.yml` executa testes e build antes de publicar. O beta original permanece em outro repositório.
+O projeto está publicado no [GitHub Pages](https://edukarnopp3.github.io/qualidade-ar-pesquisa/) com arquivos estáticos e base relativa. A automação em `.github/workflows/pages.yml` executa testes e build antes de publicar. A primeira versão pública foi conferida no navegador em 08/10/2026; registro e evidências em [docs/EXECUCAO.md](docs/EXECUCAO.md). O beta original permanece em outro repositório.
 
 Nenhuma referência normativa vem ativa por padrão. Valores apresentados descrevem registros recebidos; interpretação ambiental depende de documentação, método e revisão adequada.
