@@ -19,6 +19,17 @@ A tela inicial abre vazia. O exemplo gera sete dias sintéticos em dois casos, s
 
 Evidências em `docs/evidencias/`. Elas usam somente dados sintéticos.
 
+## Publicação confirmada
+
+- Repositório separado: https://github.com/edukarnopp3/qualidade-ar-pesquisa
+- Aplicação: https://edukarnopp3.github.io/qualidade-ar-pesquisa/
+- Código conferido: `b3e174a822a6aaeea7822e5babf6a881b62e0a6f`.
+- Workflow de publicação concluído com sucesso: https://github.com/edukarnopp3/qualidade-ar-pesquisa/actions/runs/37836133745
+- Em 08/10/2026, a página pública abriu a tela inicial e executou a demonstração com Web Worker e gráficos. Foram conferidos o caso escolar com sete médias diárias e o hospitalar com PM2,5; três gráficos renderizados, sem erros de console nos fluxos observados e sem transbordamento horizontal na largura de desktop inspecionada. O formulário opcional ISEQ identifica o backend e pede autorização antes de autenticar.
+- `docs/evidencias/publicado-painel.jpg` registra a página pública com dados sintéticos. A publicação contém código, documentação e exemplos sintéticos; nenhuma leitura institucional ou credencial foi publicada.
+
+A publicação funcional não resolve as pendências de acesso real à ISEQ, validação metrológica, referências aplicáveis ou avaliação acadêmica listadas abaixo.
+
 ## Pendências científicas e operacionais
 
 1. Obter a primeira consulta histórica real na ISEQ, com autenticação da conta do pesquisador. Nenhuma credencial foi solicitada em chat nem incorporada ao código.
