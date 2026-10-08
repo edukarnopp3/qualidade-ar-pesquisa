@@ -1,0 +1,3 @@
+/* Valores do shell Nexo aprovados; componentes científicos próprios. */
+:root{--font:"Segoe UI Variable","Segoe UI",Arial,sans-serif;--bg:#f1f4f6;--panel:#fff;--side:#e8edf1;--line:#cad3dc;--text:#1e2b36;--muted:#4f5b66;--soft:#e7ecef;--solid:#176b55;--inverse:#fff;--focus:#176b55;--blue:#22588f;--bluebg:#e7edf4;--yellow:#7a5605;--yellowbg:#f7edcf;--red:#a1302a;--redbg:#f6e3dc;--coverage-color:#4d8274;color-scheme:light}
+:root[data-theme=dark]{--bg:#171b20;--panel:#20262c;--side:#1b2026;--line:#424c56;--text:#e6ebf0;--muted:#b2bcc6;--soft:#2b333c;--solid:#87c2ad;--inverse:#13221d;--focus:#a0d1bf;--blue:#a5bdd8;--bluebg:#2b333c;--yellow:#dcc486;--yellowbg:#303036;--red:#e9a5a1;--redbg:#303036;--coverage-color:#91baad;color-scheme:dark}

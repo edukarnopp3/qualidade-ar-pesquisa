@@ -1,0 +1,9 @@
+node_modules/
+dist/
+data/*
+!data/README.md
+.env*
+!.env.example
+*.aircase
+*.log
+output/
