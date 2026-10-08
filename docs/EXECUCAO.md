@@ -34,7 +34,15 @@ A publicação funcional não resolve as pendências de acesso real à ISEQ, val
 
 Eduardo reportou `Failed to execute 'fetch' on 'Window': Illegal invocation` ao iniciar o login ISEQ. O conector guardava a função nativa em uma propriedade e a chamava como método da instância `IseqClient`; o navegador recebia um contexto inválido. O `fetch` é agora vinculado ao contexto global antes de ser armazenado. A correção mantém o contrato de URLs, autenticação e aquisição histórica.
 
-Esta falha era anterior a qualquer resposta do backend e não demonstra erro na senha. A autenticação real e a obtenção de históricos continuam dependendo da disponibilidade do serviço e da conta do pesquisador. O registro da publicação da versão corrigida será acrescentado após sua conclusão.
+Esta falha era anterior a qualquer resposta do backend e não demonstra erro na senha. A autenticação real e a obtenção de históricos continuam dependendo da disponibilidade do serviço e da conta do pesquisador.
+
+- Build local de produção concluído após a correção.
+- Código corrigido: `1c08f190cccc95bdd26b0d624d661ca11408ab48`.
+- Workflow de publicação concluído com sucesso: https://github.com/edukarnopp3/qualidade-ar-pesquisa/actions/runs/37838187060
+- Página pública conferida em `https://edukarnopp3.github.io/qualidade-ar-pesquisa/?v=0.1.1`, exibindo a versão 0.1.1. Evidência sem credenciais em `docs/evidencias/versao-0.1.1.jpg`.
+- Uma consulta HTTP ao backend expirou em 20 segundos. No navegador, `/api/health` mostrou a página do Render “Application loading”, com indicação de inicialização do serviço, em vez de uma resposta JSON da aplicação. Essa observação é separada da falha corrigida de contexto do fetch.
+
+Nenhuma credencial real foi enviada durante esta correção. A publicação foi confirmada; o login real e o download autenticado de histórico ainda não foram validados. Após atualizar a página, a versão visível deve ser 0.1.1.
 
 ## Pendências científicas e operacionais
 
