@@ -1,0 +1,11 @@
+{
+  "pages": 2,
+  "contains_mean600": true,
+  "contains_p95690": true,
+  "contains_coverage333": true,
+  "contains_execution": true,
+  "text": [
+    "QUALIDADE DO AR / ANÁLISE HISTÓRICA\nControle sintetico\nCO2 - ppm\nDEMONSTRAÇÃO - dados integralmente sintéticos.\nPeríodo: 2026-10-01 00:00:00 a 2026-10-01 01:00:00 (fim exclusivo)\nAgregação: média horária; média aritmética das leituras incluídas.\nExecução: synthetic-run; realizada em 07/10/2026, 21:00:00.\nLeituras usadas Média das leituras Percentil 95 Cobertura temporal\n2 600 690 3,33%\n600\n600\n2026-10-01 2026-10-01\nResultado descritivo. Uma referência aplicável ainda não foi selecionada; os valores não receberam\nclassificação de conformidade.\n0 janelas sem leituras utilizáveis; 0 leituras excluídas no recorte. A cobertura usa slots da frequência nominal\nconfirmada, quando disponível.\nFonte da referência: Não selecionada.\nA ferramenta analisa registros fornecidos. A validade física do sensor e a aplicabilidade da referência exigem\ndocumentação própria.\nDocumento gerado em 08/10/2026, 21:32:13 | software 0.1.1 | 1/2",
+    "Resultados por janela\nInício Média N Cobertura Elegibilidade / resultado\n10-01 00:00 600 2 3,33% Descritivo\nDocumento gerado em 08/10/2026, 21:32:13 | software 0.1.1 | 2/2"
+  ]
+}

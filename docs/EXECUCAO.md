@@ -46,6 +46,12 @@ Nenhuma credencial real foi enviada durante esta correção. A publicação foi 
 
 ## Pendências científicas e operacionais
 
+### Auditoria multiagente concluída em 08/10/2026
+
+No código `29ed8aaf6eba5cdcb9ee8867b7b82f1abcb272f0` (0.1.1), três agentes e a revisão de navegador confirmaram **26 famílias de falhas: 8 P1, 15 P2 e 3 P3**. O login com servidor controlado permaneceu bloqueado por 75 segundos, sem prazo, progresso ou cancelamento. A autenticação/histórico rápidos funcionaram no controle sintético; login real e disponibilidade/CORS de produção continuam não validados.
+
+Os 24 testes existentes passaram. A ampliação de cobertura encontrou defeitos que esses testes não exercitavam, incluindo CSV, calendário Excel, identidade e natureza da origem, contexto externo/histórico, esquema/sanitização de pacotes e estados de interface. Nenhuma correção do código de produção foi aplicada na auditoria. [Relatório completo](../audits/2026-10-08/RELATORIO.md), [relatórios por área e reproduções](../audits/2026-10-08/REPRODUCAO.md). As falhas prioritárias devem ser corrigidas e reproduzidas novamente antes do piloto científico.
+
 1. Obter a primeira consulta histórica real na ISEQ, com autenticação da conta do pesquisador. Nenhuma credencial foi solicitada em chat nem incorporada ao código.
 2. Confirmar fabricante/modelo, unidades reais, princípio de medição, frequência nominal e metadados de cada ambiente. COVs/NOx continuam descritivos quando unidade/validade não foram confirmadas.
 3. Revisar fontes e edições, método, janelas, critérios de suficiência e requisitos externos. As regras cadastradas são declaradas pelo pesquisador; o software não verifica automaticamente a validade documental.

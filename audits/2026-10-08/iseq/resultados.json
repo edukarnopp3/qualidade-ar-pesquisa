@@ -1,0 +1,103 @@
+{
+  "timestamp": "2026-10-09T00:49:15.568Z",
+  "version": "0.1.1",
+  "findings": [
+    {
+      "id": "ISEQ-01",
+      "phase": "login",
+      "settledAfter60ms": false,
+      "abortSignalAttached": false,
+      "builtInDeadline": false
+    },
+    {
+      "id": "ISEQ-02",
+      "phase": "job polling request",
+      "elapsedFakeMinutes": 60,
+      "advertisedDeadlineMinutes": 20,
+      "settled": false
+    },
+    {
+      "id": "ISEQ-03",
+      "expected": "Sua sessão terminou. Entre novamente.",
+      "observed": "O backend retornou erro 401.",
+      "actualBackendErrorShape": "detail.code + detail.message"
+    },
+    {
+      "id": "ISEQ-04",
+      "dataEndpointReturned": "HTTP 200 HTML",
+      "observedSuccessfulRows": 0,
+      "loginEndpointReturned": "HTTP 200 HTML",
+      "loginMessage": "O backend não devolveu uma sessão válida."
+    },
+    {
+      "id": "ISEQ-05",
+      "userClosedLoginDialog": true,
+      "passwordRetainedWhileWaiting": true,
+      "passwordClearedAfterResolution": true,
+      "unexpectedDialogAfterResponse": "Selecionar histórico ISEQ",
+      "dialogCount": 2
+    },
+    {
+      "id": "ISEQ-06",
+      "clientTokenClearedBy401": true,
+      "reopeningShows": "Selecionar histórico ISEQ",
+      "loginRequiredButNotShown": true
+    },
+    {
+      "id": "ISEQ-07",
+      "logoutSettled": false,
+      "modalClosed": false,
+      "clientTokenStillAttachedWhileLogoutPending": true,
+      "mainClientStillPresent": true
+    },
+    {
+      "id": "ISEQ-08",
+      "operationRejected": true,
+      "spinnerStillPresent": true,
+      "cancelButtonStillPresent": true,
+      "controllerStillPresent": true
+    },
+    {
+      "id": "ISEQ-09",
+      "equipmentCount": 0,
+      "emptyRequiredSelectShown": true,
+      "noEmptyAccountMessage": true
+    },
+    {
+      "id": "PASS-PAGINATION",
+      "rows": 25001,
+      "offsets": [
+        0,
+        25000
+      ],
+      "duplicateRows": false
+    },
+    {
+      "id": "PASS-HISTORY-CANCEL",
+      "abortedFetchRejected": true
+    },
+    {
+      "id": "PASS-HISTORY-FORMAT",
+      "format": "wide",
+      "recognizedDate": "data_local",
+      "recognizedParameterCount": 9
+    },
+    {
+      "id": "PASS-EQUIPMENT-CONTEXT",
+      "equipmentIdSent": "AA:BB:CC:DD:EE:01",
+      "importedSensorId": "AA:BB:CC:DD:EE:01",
+      "labelPreserved": true,
+      "rowsPreserved": true
+    },
+    {
+      "id": "PASS-STRING-ERROR",
+      "observed": "Erro controlado explícito"
+    },
+    {
+      "id": "ISEQ-10",
+      "pollWaitsCompleted": 3,
+      "abortListenersAdded": 3,
+      "abortListenersRemoved": 0
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "version": "0.1.1",
+  "commit": "29ed8aaf6eba5cdcb9ee8867b7b82f1abcb272f0",
+  "syntheticOnly": true,
+  "login": {
+    "pendingAfterSeconds": 75,
+    "submitDisabled": true,
+    "busy": false,
+    "error": "",
+    "cancelButton": false
+  },
+  "lateLogin": {
+    "before": "Cadastrar referência",
+    "after": "Selecionar histórico ISEQ",
+    "referenceFieldAfter": false
+  },
+  "outdoorContext": {
+    "valueInitiallyPpm": 400,
+    "eligibleBefore": 163,
+    "eligibleAfterSwitch": 0,
+    "reason": "A comparação exige CO₂ externo e esse dado não foi informado."
+  },
+  "historicalContext": {
+    "cadenceOriginally": 300,
+    "cadenceDisplayedAfterEdit": 600,
+    "archivedCoveragePercent": 97.27
+  },
+  "failedSharedEdit": {
+    "error": "O pacote compartilhável permite visualizar resultados. Recupere os arquivos de entrada para recalcular.",
+    "namePersisted": "ALTERADO APÓS FALHA · auditoria",
+    "executionPreserved": "d8e30b75-5cde-46f8-8584-ea07d5347be9"
+  },
+  "mobileOpenControl": {
+    "viewport": [
+      390,
+      844
+    ],
+    "innerText": "",
+    "ariaLabel": null,
+    "title": null,
+    "labelSize": [
+      0,
+      0
+    ],
+    "horizontalOverflow": false
+  }
+}

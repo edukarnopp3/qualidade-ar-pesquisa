@@ -1,0 +1,25 @@
+QUALIDADE DO AR / ANÁLISE HISTÓRICA
+Controle sintetico
+CO2 - ppm
+DEMONSTRAÇÃO - dados integralmente sintéticos.
+Período: 2026-10-01 00:00:00 a 2026-10-01 01:00:00 (fim exclusivo)
+Agregação: média horária; média aritmética das leituras incluídas.
+Execução: synthetic-run; realizada em 07/10/2026, 21:00:00.
+Leituras usadas Média das leituras Percentil 95 Cobertura temporal
+2 600 690 3,33%
+600
+600
+2026-10-01 2026-10-01
+Resultado descritivo. Uma referência aplicável ainda não foi selecionada; os valores não receberam
+classificação de conformidade.
+0 janelas sem leituras utilizáveis; 0 leituras excluídas no recorte. A cobertura usa slots da frequência nominal
+confirmada, quando disponível.
+Fonte da referência: Não selecionada.
+A ferramenta analisa registros fornecidos. A validade física do sensor e a aplicabilidade da referência exigem
+documentação própria.
+Documento gerado em 08/10/2026, 21:32:13 | software 0.1.1 | 1/2
+
+Resultados por janela
+Início Média N Cobertura Elegibilidade / resultado
+10-01 00:00 600 2 3,33% Descritivo
+Documento gerado em 08/10/2026, 21:32:13 | software 0.1.1 | 2/2

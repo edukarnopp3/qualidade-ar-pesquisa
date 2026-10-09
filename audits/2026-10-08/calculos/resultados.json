@@ -1,0 +1,132 @@
+{
+  "head": "29ed8aaf6eba5cdcb9ee8867b7b82f1abcb272f0",
+  "fixtures": "artificiais; sem dados reais ou critérios normativos",
+  "findings": [
+    {
+      "id": "CALC-01",
+      "expected": {
+        "comparedValue": 200000,
+        "comparison": "ate_referencia"
+      },
+      "observed": {
+        "comparedValue": 599600,
+        "comparison": "acima",
+        "eligibility": "admissivel"
+      },
+      "details": "600000 ppb internos menos 400 ppm externos; valor 200000 ppb e limiar artificial igual a 200000 ppb."
+    },
+    {
+      "id": "CALC-02",
+      "expected": {
+        "eligibility": "contexto externo invalido; impedir comparação"
+      },
+      "observed": {
+        "eligibility": "admissivel",
+        "comparedValue": 800,
+        "comparison": "acima"
+      },
+      "details": "CO2 externo -200 ppm, interno 600 ppm, limiar artificial 700 ppm. Confirmado também no handler real do formulário: sem min e sem rejeição do valor -200."
+    },
+    {
+      "id": "CALC-03",
+      "expected": {
+        "action": "bloquear divergência ou criar caso HOSPITAL",
+        "meanSchool": 600
+      },
+      "observed": {
+        "sensorOriginal": "HOSPITAL",
+        "sensorNormalized": "SCHOOL",
+        "meanSchool": 750,
+        "caseEnvironment": "escola"
+      },
+      "details": "Handler real aceita a planilha com um único sensor HOSPITAL adicionada ao caso SCHOOL."
+    },
+    {
+      "id": "CALC-04",
+      "expected": {
+        "action": "impedir mistura ou marcar explicitamente dados mistos/sintéticos"
+      },
+      "observed": {
+        "caseSynthetic": false,
+        "sourceSynthetic": "campo ausente",
+        "observations": 2,
+        "meanShown": 750
+      },
+      "details": "Arquivo marcado sintético, checkbox ativo, destino caso real."
+    },
+    {
+      "id": "CALC-05",
+      "expected": {
+        "unchangedFirstReference": {
+          "comparedValue": 200,
+          "comparison": "acima"
+        },
+        "externalAfterReturningToSchool": 400
+      },
+      "observed": {
+        "beforeAnotherRule": {
+          "comparedValue": 200,
+          "comparison": "acima"
+        },
+        "afterAnotherRule": {
+          "comparedValue": 100,
+          "comparison": "ate_referencia"
+        },
+        "externalAfterReturningToSchool": null,
+        "eligibilityAfterSwitch": "contexto_pendente"
+      },
+      "details": "Handlers reais: cadastro A com externo400, cadastro B com externo500, aplicar regra A; alternar hospital e retornar escola."
+    },
+    {
+      "id": "CALC-06",
+      "expected": {
+        "mean": 1e+308,
+        "sd": 0
+      },
+      "observed": {
+        "mean": "Infinity",
+        "sd": "Infinity",
+        "jsonExport": "{\"n\":2,\"mean\":null,\"median\":1e+308,\"min\":1e+308,\"max\":1e+308,\"p95\":1e+308,\"sd\":null}"
+      },
+      "details": "Robustez numérica de entradas artificiais extremas; não representa valores ambientais plausíveis."
+    }
+  ],
+  "controls": [
+    {
+      "name": "gabarito estatístico [10,20,30,40]",
+      "status": "PASS"
+    },
+    {
+      "name": "duplicatas idênticas conservadas e um único uso",
+      "status": "PASS"
+    },
+    {
+      "name": "conflito exclui ambos; sensores distintos não conflitam",
+      "status": "PASS"
+    },
+    {
+      "name": "cobertura nominal 30 de60 e frequência observada60s",
+      "status": "PASS"
+    },
+    {
+      "name": "sobreamostragem de um slot não aumenta cobertura",
+      "status": "PASS"
+    },
+    {
+      "name": "janela sem dados preserva lacuna e janelas parciais impedem comparação",
+      "status": "PASS"
+    },
+    {
+      "name": "unidades incompatíveis excluídas e condições pendentes impedem referência",
+      "status": "PASS"
+    },
+    {
+      "name": "fração acima considera apenas janelas elegíveis",
+      "status": "PASS"
+    },
+    {
+      "name": "perfil e histograma têm a mesma base e preservam contagem",
+      "status": "PASS"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+[
+  {
+    "canvasCount": 3,
+    "heading": "Como CO₂ varia no tempo",
+    "mean": "556,22 ppm"
+  },
+  {
+    "canvasCount": 3,
+    "heading": "Como PM₂,₅ varia no tempo",
+    "mean": "11,36 µg/m³"
+  },
+  {
+    "canvasCount": 3,
+    "heading": "Como PM₁ varia no tempo",
+    "mean": "5,14 µg/m³"
+  },
+  {
+    "canvasCount": 3,
+    "heading": "Como PM₁₀ varia no tempo",
+    "mean": "16,81 µg/m³"
+  },
+  {
+    "canvasCount": 3,
+    "heading": "Como Temperatura varia no tempo",
+    "mean": "23,92 °C"
+  },
+  {
+    "canvasCount": 3,
+    "heading": "Como Umidade relativa varia no tempo",
+    "mean": "50,77 %"
+  },
+  {
+    "canvasCount": 3,
+    "heading": "Como Pressão varia no tempo",
+    "mean": "1.012,91 hPa"
+  },
+  {
+    "canvasCount": 3,
+    "heading": "Como COVs varia no tempo",
+    "mean": "92,22 índice sintético"
+  },
+  {
+    "canvasCount": 3,
+    "heading": "Como NOₓ varia no tempo",
+    "mean": "24,59 índice sintético"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "execution": "d8e30b75-5cde-46f8-8584-ea07d5347be9",
+  "rows": 7,
+  "completeObservations": 17676,
+  "sharedObservations": 0,
+  "mean": 649.2915392456676,
+  "used": 1962,
+  "coverage": 0.9732142857142857,
+  "matchingExcelCsvPackages": true,
+  "pdfHeaderValid": true
+}

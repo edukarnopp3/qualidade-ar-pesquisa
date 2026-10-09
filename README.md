@@ -48,6 +48,10 @@ Não inclua credenciais no Git ou nos pacotes. Esta entrega testou o conector co
 
 ## Verificações
 
+### Auditoria funcional de 08/10/2026
+
+A auditoria multiagente da versão 0.1.1 confirmou **26 famílias de falhas**, incluindo espera sem limite da ISEQ, interpretação de CSV, identidade de sensor, natureza sintética e contexto de execuções. Os 24 testes existentes passaram, mas não cobriam esses cenários. Consulte o [relatório e a ordem de correção](audits/2026-10-08/RELATORIO.md) e as [reproduções controladas](audits/2026-10-08/REPRODUCAO.md). Os achados permanecem pendentes de correção; a auditoria não valida o uso científico com dados reais.
+
 ```powershell
 npm test
 npm run build

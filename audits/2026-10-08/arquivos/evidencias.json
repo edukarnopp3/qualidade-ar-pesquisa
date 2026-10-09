@@ -1,0 +1,257 @@
+[
+  {
+    "id": "excel1904",
+    "expected": "2026-10-01T00:00:00",
+    "serial": 44834,
+    "libraryCalendar": {
+      "D": 44834,
+      "T": 0,
+      "u": 0,
+      "y": 2026,
+      "m": 10,
+      "d": 1,
+      "H": 0,
+      "M": 0,
+      "S": 0,
+      "q": 4
+    },
+    "parsedRows": [
+      {
+        "data_local": 44834,
+        "CO2": 600
+      }
+    ],
+    "mapping": {
+      "format": "wide",
+      "date": "data_local",
+      "parameter": "",
+      "value": "",
+      "unit": "",
+      "sensor": "",
+      "columns": {
+        "CO2": "CO2"
+      }
+    },
+    "observations": [
+      {
+        "value": 600,
+        "originalTime": "44834",
+        "localTime": "2022-09-30T00:00:00",
+        "row": 2
+      }
+    ],
+    "issues": []
+  },
+  {
+    "id": "csv-data-br.csv",
+    "parsedRows": [
+      {
+        "data_local": 46032,
+        "CO2": 600
+      },
+      {
+        "data_local": 46063,
+        "CO2": 700
+      }
+    ],
+    "mapping": {
+      "format": "wide",
+      "date": "data_local",
+      "parameter": "",
+      "value": "",
+      "unit": "",
+      "sensor": "",
+      "columns": {
+        "CO2": "CO2"
+      }
+    },
+    "observations": [
+      {
+        "value": 600,
+        "originalTime": "46032",
+        "localTime": "2026-01-10T00:00:00",
+        "row": 2
+      },
+      {
+        "value": 700,
+        "originalTime": "46063",
+        "localTime": "2026-02-10T00:00:00",
+        "row": 3
+      }
+    ],
+    "issues": []
+  },
+  {
+    "id": "csv-decimal-comma.csv",
+    "parsedRows": [
+      {
+        "data_local": 46296,
+        "CO2": 6005
+      },
+      {
+        "data_local": 46296.00069444445,
+        "CO2": 7005
+      }
+    ],
+    "mapping": {
+      "format": "wide",
+      "date": "data_local",
+      "parameter": "",
+      "value": "",
+      "unit": "",
+      "sensor": "",
+      "columns": {
+        "CO2": "CO2"
+      }
+    },
+    "observations": [
+      {
+        "value": 6005,
+        "originalTime": "46296",
+        "localTime": "2026-10-01T00:00:00",
+        "row": 2
+      },
+      {
+        "value": 7005,
+        "originalTime": "46296.00069444445",
+        "localTime": "2026-10-01T00:01:00",
+        "row": 3
+      }
+    ],
+    "issues": []
+  },
+  {
+    "id": "csv-iso-date.csv",
+    "parsedRows": [
+      {
+        "data_local": 46296,
+        "CO2": 600.5
+      },
+      {
+        "data_local": 46296.00069444445,
+        "CO2": 700.5
+      }
+    ],
+    "mapping": {
+      "format": "wide",
+      "date": "data_local",
+      "parameter": "",
+      "value": "",
+      "unit": "",
+      "sensor": "",
+      "columns": {
+        "CO2": "CO2"
+      }
+    },
+    "observations": [
+      {
+        "value": 600.5,
+        "originalTime": "46296",
+        "localTime": "2026-10-01T00:00:00",
+        "row": 2
+      },
+      {
+        "value": 700.5,
+        "originalTime": "46296.00069444445",
+        "localTime": "2026-10-01T00:01:00",
+        "row": 3
+      }
+    ],
+    "issues": []
+  },
+  {
+    "id": "csv-formula.csv",
+    "parsedRows": [
+      {
+        "data_local": 46296,
+        "CO2": "=600+1"
+      }
+    ],
+    "mapping": {
+      "format": "wide",
+      "date": "data_local",
+      "parameter": "",
+      "value": "",
+      "unit": "",
+      "sensor": "",
+      "columns": {
+        "CO2": "CO2"
+      }
+    },
+    "observations": [],
+    "issues": [
+      {
+        "rowNumber": 2,
+        "sourceId": "audit-source",
+        "parameter": "CO2",
+        "code": "valor_ausente_invalido",
+        "detail": "=600+1"
+      }
+    ]
+  },
+  {
+    "id": "export-historical-metadata",
+    "archivedNominalInterval": 60,
+    "currentNominalInterval": 300,
+    "executionCoverage": 0.03333333333333333,
+    "exportedMethod": [
+      {
+        "execucao": "synthetic-run",
+        "data_execucao": "2026-10-08T00:00:00Z",
+        "sensor": "AUDIT-SYNTHETIC",
+        "ambiente": "escola",
+        "origem": "Sintético",
+        "janela": "hour",
+        "frequencia_nominal_segundos": 300,
+        "regra": "Nenhuma",
+        "fonte": "",
+        "software": "0.1.1",
+        "metodo": "descritivo-1"
+      }
+    ],
+    "exportedResults": [
+      {
+        "caso": "Controle sintético",
+        "execucao": "synthetic-run",
+        "parametro": "CO2",
+        "unidade": "ppm",
+        "inicio": "2026-10-01T00:00:00",
+        "fim": "2026-10-01T01:00:00",
+        "media": 600,
+        "mediana": 600,
+        "minimo": 500,
+        "maximo": 700,
+        "leituras_usadas": 2,
+        "slots_observados": 2,
+        "slots_esperados": 60,
+        "cobertura": 0.03333333333333333,
+        "elegibilidade": "Descritivo",
+        "resultado": "",
+        "motivo": "Análise descritiva. Nenhuma referência selecionada.",
+        "regra": "",
+        "versao_regra": "",
+        "software": "0.1.1"
+      }
+    ]
+  },
+  {
+    "id": "shared-decisions",
+    "individualObservations": 0,
+    "decisions": [
+      {
+        "at": "2026-10-08T00:01:00Z",
+        "observationId": "ea04345f1e8c5461:2:CO2",
+        "include": true,
+        "reason": "Escolhi a leitura 500 ppm; a original 700 ppm é conflito."
+      }
+    ]
+  },
+  {
+    "id": "package-inconsistent-schema",
+    "datasetId": "another-case",
+    "runDatasetId": "synthetic-case",
+    "datasetSensor": "another-sensor",
+    "runSensor": "AUDIT-SYNTHETIC",
+    "accepted": true
+  }
+]

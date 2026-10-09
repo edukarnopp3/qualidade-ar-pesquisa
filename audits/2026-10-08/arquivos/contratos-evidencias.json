@@ -1,0 +1,86 @@
+[
+  {
+    "id": "full-shared-normal",
+    "passed": true,
+    "mean": 600,
+    "fullObservations": 2,
+    "sharedObservations": 0,
+    "sharedHasInputs": false
+  },
+  {
+    "id": "exports-independent-oracle",
+    "expected": {
+      "mean": 600,
+      "p95": 690,
+      "n": 2,
+      "coverage": 0.03333333333333333
+    },
+    "excel": {
+      "caso": "Controle sintetico",
+      "execucao": "synthetic-run",
+      "parametro": "CO2",
+      "unidade": "ppm",
+      "inicio": "2026-10-01T00:00:00",
+      "fim": "2026-10-01T01:00:00",
+      "media": 600,
+      "mediana": 600,
+      "minimo": 500,
+      "maximo": 700,
+      "leituras_usadas": 2,
+      "slots_observados": 2,
+      "slots_esperados": 60,
+      "cobertura": 0.03333333333333333,
+      "elegibilidade": "Descritivo",
+      "resultado": "",
+      "motivo": "Análise descritiva. Nenhuma referência selecionada.",
+      "regra": "",
+      "versao_regra": "",
+      "software": "0.1.1"
+    },
+    "csvIncludesMean": true
+  },
+  {
+    "id": "tamper-rejection",
+    "passed": true,
+    "message": "Integridade divergente: execution.json. O pacote foi alterado ou está corrompido."
+  },
+  {
+    "id": "schema-bins-invalid",
+    "accepted": true,
+    "bins": {
+      "not": "an array"
+    },
+    "exportError": "run.analysis.bins.map is not a function"
+  },
+  {
+    "id": "own-package-too-many-sources",
+    "sources": 148,
+    "manifestFiles": 151,
+    "size": 38891,
+    "created": true,
+    "reopened": false,
+    "message": "O pacote contém arquivos demais."
+  },
+  {
+    "id": "bounded-uncompression",
+    "passed": true,
+    "message": "Conteúdo descompactado excede o limite desta versão."
+  },
+  {
+    "id": "schema-version-rejection",
+    "passed": true,
+    "message": "Versão de pacote incompatível. Abra com a versão do software que o criou."
+  },
+  {
+    "id": "empty-preferred-sheet-blocks-valid-sheet",
+    "validDataRows": 1,
+    "emptyPreferred": "Dados brutos",
+    "message": "A planilha selecionada não contém linhas de dados."
+  },
+  {
+    "id": "unselected-mixed-sheet-blocks-valid-sheet",
+    "validDataRows": 1,
+    "validPreferred": "Dados brutos",
+    "message": "A aba Resumo todos sensores contém identificadores de vários sensores. Separe a exportação por sensor para preservar os casos."
+  }
+]

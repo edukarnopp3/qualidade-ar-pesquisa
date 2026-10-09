@@ -1,0 +1,2 @@
+"caso";"execucao";"parametro";"unidade";"inicio";"fim";"media";"mediana";"minimo";"maximo";"leituras_usadas";"slots_observados";"slots_esperados";"cobertura";"elegibilidade";"resultado";"motivo";"regra";"versao_regra";"software"
+"Controle sintetico";"synthetic-run";"CO2";"ppm";"2026-10-01T00:00:00";"2026-10-01T01:00:00";"600";"600";"500";"700";"2";"2";"60";"0.03333333333333333";"Descritivo";"";"Análise descritiva. Nenhuma referência selecionada.";"";"";"0.1.1"

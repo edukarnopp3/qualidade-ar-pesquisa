@@ -1,0 +1,36 @@
+
+> qualidade-ar-pesquisa@0.1.1 test
+> node --test tests/*.test.js
+
+✔ números locais e internacionais não executam conteúdo de célula (1.081ms)
+✔ datas inválidas não rolam silenciosamente e offset é explícito (0.4136ms)
+✔ rejeições preservam linha e valor da fonte (0.3242ms)
+✔ sensores simultâneos são entidades distintas (8.1062ms)
+✔ duplicata idêntica usa uma leitura e conserva ambas (0.2444ms)
+✔ conflito conserva valores e bloqueia ambos até decisão (0.6591ms)
+✔ janela ausente permanece na grade temporal (1.9517ms)
+✔ leituras concentradas em um slot não simulam cobertura alta (0.2899ms)
+✔ referência usa somente janelas elegíveis no denominador (1.0583ms)
+✔ frequência nominal, método, unidade e escopo pendentes bloqueiam comparação (0.5795ms)
+✔ unidade de um novo arquivo não confirmada bloqueia comparação mesmo com cadastro antigo (0.2657ms)
+✔ unidades distintas não são misturadas na média descritiva (0.1683ms)
+✔ janela parcial, CO2 externo ausente e regra sintética em dado real bloqueiam comparação (0.6494ms)
+✔ estatísticas conferíveis manualmente e execução determinística (0.356ms)
+✔ perfil e histograma usam a mesma base da média e conservam contagens (0.2161ms)
+✔ Excel amplo conserva linhas vazias e números originais (23.8894ms)
+✔ Excel longo ISEQ reconhece parâmetro, unidade e valor (4.1266ms)
+✔ pacote completo restaura originais e resultados sem recalcular (19.2393ms)
+✔ pacote compartilhável omite originais e observações individuais (4.9212ms)
+✔ pacote alterado é recusado por integridade (5.9215ms)
+✔ PDF e Excel derivam da mesma execução e células textuais são neutralizadas (38.9914ms)
+✔ conector ISEQ é inerte antes da ação de login e pagina histórico com sessão em memória (0.906ms)
+✔ arquivo com sensores misturados é recusado antes da análise (2.5452ms)
+✔ descompactação é interrompida ao exceder o limite, antes de juntar todo o conteúdo (6.8143ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 324.3545
