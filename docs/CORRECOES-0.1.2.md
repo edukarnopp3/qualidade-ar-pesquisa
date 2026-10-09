@@ -62,6 +62,13 @@ Pacote completo conserva a base exata da execução selecionada; os demais itens
 
 Compartilhável remove contexto individual, mas ainda contém identificação e agregados: revise antes de compartilhar. Hashes demonstram integridade relativa ao manifesto, sem assinatura/autenticidade. Limites de arquivo não são garantia de desempenho em qualquer dispositivo.
 
+## Publicação conferida
+
+- Código corrigido: `da665e8ddc65c87b34f8b06b07739d06b8c5f664`.
+- [Workflow de testes, build e publicação concluído com sucesso](https://github.com/edukarnopp3/qualidade-ar-pesquisa/actions/runs/37942358949).
+- [Página pública](https://edukarnopp3.github.io/qualidade-ar-pesquisa/?v=0.1.2), conferida em 09/10/2026: versão 0.1.2, demonstração calculada por worker, três gráficos renderizados, método `descritivo-2`, sem erro de console ou overflow horizontal no estado desktop observado.
+- [Captura da versão publicada](evidencias/v0.1.2/publicado-painel.jpg).
+
 ## Limites da conclusão
 
 Os 26 comportamentos reproduzidos foram corrigidos no escopo auditado; isso não demonstra ausência de todo bug possível. Login e download reais da ISEQ, disponibilidade/CORS do serviço, calibração, fontes normativas e análise de dados institucionais **ainda não foram validados**. O backend externo não foi alterado. Nenhuma senha real foi solicitada, gravada ou publicada.

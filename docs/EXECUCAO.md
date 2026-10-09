@@ -74,3 +74,7 @@ O PDF de uma única média 600 foi renderizado com Poppler e o ponto está visí
 Rodada final local: **97/97 testes aprovados**, zero falhas, build concluído (806 módulos). Os callbacks reais da interface têm 11 regressões de troca transacional e leitura/abertura concorrente. Evidência integral em [testes-finais.txt](evidencias/v0.1.2/testes-finais.txt).
 
 As pendências científicas e o login real da ISEQ permanecem as listadas acima. A correção do cliente não muda disponibilidade/autenticação do backend externo.
+
+### Publicação da 0.1.2
+
+Código `da665e8ddc65c87b34f8b06b07739d06b8c5f664`, [workflow concluído com sucesso](https://github.com/edukarnopp3/qualidade-ar-pesquisa/actions/runs/37942358949). Em 09/10/2026, a [página pública](https://edukarnopp3.github.io/qualidade-ar-pesquisa/?v=0.1.2) exibiu 0.1.2 e executou a demonstração escolar com worker, três gráficos e método `descritivo-2`, sem erros de console ou overflow horizontal no estado desktop exercitado. [Evidência](evidencias/v0.1.2/publicado-painel.jpg). Código, documentação e exemplos sintéticos publicados; nenhuma leitura institucional ou credencial real incluída.
