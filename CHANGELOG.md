@@ -1,5 +1,9 @@
 # Histórico
 
+## Recuperação operacional ISEQ — 09/10/2026
+
+Identificada pausa no Supabase como causa real da falha de inicialização do backend. Banco existente retomado e serviço reiniciado com o mesmo código. Saúde HTTP 200, PostgreSQL persistente, autenticação pronta e CORS para GitHub Pages confirmados; consulta seguinte em 0,42 s. Sem alteração funcional da versão 0.1.3 ou contratação de plano. Login/listagem/consulta real da ISEQ ainda aguardam o pesquisador. [Registro do incidente e limites](docs/INCIDENTE-ISEQ-2026-10-09.md).
+
 ## 0.1.3 — 09/10/2026
 
 Prontidão ISEQ antes do login, prazo separado e cancelamento sem transmitir credenciais; fallback de backend customizado; lista vazia sem chamada redundante; contagens de progresso/cache validadas; job concluído direto para paginação; diagnóstico transitório com cópia segura e limpeza no logout. Fixtures e benchmark integralmente sintéticos. Padrão de dois workers e método `descritivo-2` preservados. [Entrega, evidências e pendências reais](docs/ISEQ-0.1.3.md).
