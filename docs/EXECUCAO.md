@@ -78,3 +78,15 @@ As pendências científicas e o login real da ISEQ permanecem as listadas acima.
 ### Publicação da 0.1.2
 
 Código `da665e8ddc65c87b34f8b06b07739d06b8c5f664`, [workflow concluído com sucesso](https://github.com/edukarnopp3/qualidade-ar-pesquisa/actions/runs/37942358949). Em 09/10/2026, a [página pública](https://edukarnopp3.github.io/qualidade-ar-pesquisa/?v=0.1.2) exibiu 0.1.2 e executou a demonstração escolar com worker, três gráficos e método `descritivo-2`, sem erros de console ou overflow horizontal no estado desktop exercitado. [Evidência](evidencias/v0.1.2/publicado-painel.jpg). Código, documentação e exemplos sintéticos publicados; nenhuma leitura institucional ou credencial real incluída.
+
+## Planejamento de desempenho da ISEQ — 09/10/2026
+
+Foi registrado um plano incremental para separar prontidão do backend, autenticação/lista, execução/cache do histórico e transferência/preparação local. A revisão do contrato encontrou uma rota pública de health e contagens de tarefas/cache que o cliente atual ainda não apresenta. O plano inclui telemetria transitória sem credenciais nem leituras, comparação cautelosa de paralelismo e decisão de hospedagem apenas após medir cold start. Consulte [PLANO-DESEMPENHO-ISEQ.md](PLANO-DESEMPENHO-ISEQ.md). Este registro documenta o planejamento: nenhuma alteração funcional, acesso autenticado, mudança no serviço beta ou nova publicação ocorreu nesta etapa.
+
+## Execução da melhoria ISEQ — 0.1.3, 09/10/2026
+
+Após autorização para executar, foram implementados health antes do login, espera própria de 90 s, progresso/cache com contagens, diagnóstico seguro em memória e eliminação de chamadas redundantes em lista vazia/job já concluído. O paralelismo permaneceu em dois, pois a comparação disponível usa backend simulado. Método analítico `descritivo-2` e beta preservados. [Relatório e evidências](ISEQ-0.1.3.md).
+
+116 testes passaram e build de produção foi concluído. O navegador conferiu estados de espera, cancelamento/recuperação, legado, falha de autenticação, contagens/cache, entrada sintética até a análise, cópia segura e limpeza no logout. A versão 0.1.3 foi conferida no build de produção em `127.0.0.1:4176`, com resumo de tempos e layout de 390 px. Dados/credenciais dos fluxos controlados eram fictícios.
+
+A consulta pública real `/api/health`, sem credenciais, expirou em 95,08 s; a página correspondente no navegador mostrou a intermediação “Render — Application loading” nas observações posteriores. Não se confirmou plano/causa interna da hospedagem, não houve autenticação real e não se pode atribuir os tempos da simulação ao fornecedor. A melhoria torna a etapa identificável/abortável; a disponibilidade do serviço continua sendo dependência externa.

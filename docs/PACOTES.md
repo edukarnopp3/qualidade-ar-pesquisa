@@ -10,6 +10,8 @@ Compartilhável: resultados agregados e metadados permitidos por listas explíci
 
 Reabertura verifica estrutura, hashes, tipos, números finitos e vínculos de caso/sensor/execução/fontes antes de renderizar. Integridade de hash sozinha não torna um esquema válido. Recalcular exige ação explícita e entradas disponíveis, criando outro ID/data. Legados de esquema 1 sem contexto congelado recebem aviso de limitação histórica; esquema diferente é recusado. A preferência de tema é o único dado salvo em localStorage. Casos e sessões ISEQ não são salvos no navegador.
 
+Na versão 0.1.3, os diagnósticos de tempos ISEQ também ficam apenas em memória e são descartados no logout/recarregamento. Eles não fazem parte de casos, arquivos originais ou pacotes; o esquema e os dados preservados do pacote não mudaram.
+
 ## Limites do contrato 0.1.2
 
 Um único conjunto governa geração e abertura: ZIP de até 80 MiB, conteúdo expandido até 160 MiB, manifesto até 256 KiB, até 1.000 fontes além dos três JSON de dados, até um milhão de observações/ocorrências/decisões, 30 execuções históricas e 20 mil janelas por execução. Caminhos extras, fontes duplicadas ou originais com tamanho/hash divergentes são recusados. Limites de contagem/tamanho não garantem desempenho em todo dispositivo. Pacotes com 148 e 1.000 fontes pequenas e bases históricas têm regressões de ida e volta.

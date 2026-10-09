@@ -7,7 +7,7 @@ const deferred = () => { let resolve; const promise = new Promise(value => { res
 const pending = () => new Promise(() => {});
 const equipment = [{ mac: 'SYNTHETIC-SCHOOL', label: 'Escola sintética' }];
 const loginPayload = { session_token: 'synthetic-token', equipment };
-const client = (fetcher, options = {}) => new IseqClient('https://example.invalid', fetcher, { requestTimeoutMs: 500, operationTimeoutMs: 2000, pollIntervalMs: 1, logoutTimeoutMs: 30, ...options });
+const client = (fetcher, options = {}) => new IseqClient('https://example.invalid', fetcher, { healthCheck: false, requestTimeoutMs: 500, operationTimeoutMs: 2000, pollIntervalMs: 1, logoutTimeoutMs: 30, ...options });
 const historical = (instance, signal, progress) => instance.historical('SYNTHETIC-SCHOOL', '2026-10-01T00:00:00', '2026-10-02T00:00:00', signal, progress);
 const codeIs = code => error => error instanceof IseqError && error.code === code;
 
@@ -50,7 +50,7 @@ test('ISEQ-02: prazo integral alcança a segunda página depois de uma página v
 });
 
 test('ISEQ-01/02: prazo integral do login inclui lista complementar e remove token provisório', { timeout: 1000 }, async () => {
-  const instance = client(async url => url.endsWith('/login') ? response({ session_token: 'synthetic-token', equipment: [] }) : pending(), { requestTimeoutMs: 500, operationTimeoutMs: 20 });
+  const instance = client(async url => url.endsWith('/login') ? response({ session_token: 'synthetic-token' }) : pending(), { requestTimeoutMs: 500, operationTimeoutMs: 20 });
   await assert.rejects(instance.login('synthetic-user', 'synthetic-password'), codeIs('operation_timeout'));
   assert.equal(instance.hasSession, false);
 });
@@ -156,10 +156,16 @@ test('ISEQ-08: histórico abortável em corpo pendente não devolve sucesso ou p
 
 test('ISEQ-09: conta vazia retorna [] explícito e permite atualizar sensores', async () => {
   let listCalls = 0;
-  const instance = client(async url => url.endsWith('/login') ? response({ session_token: 'synthetic-token', equipment: [] }) : response({ equipment: ++listCalls === 1 ? [] : equipment }));
+  const instance = client(async url => {
+    if (url.endsWith('/login')) return response({ session_token: 'synthetic-token', equipment: [] });
+    listCalls++;
+    return response({ equipment });
+  });
   assert.deepEqual(await instance.login('synthetic-user', 'synthetic-password'), []);
   assert.equal(instance.hasSession, true);
+  assert.equal(listCalls, 0);
   assert.deepEqual(await instance.listEquipment(), equipment);
+  assert.equal(listCalls, 1);
 });
 
 test('ISEQ-10: polling concluído remove todos os listeners temporários de abort', async () => {

@@ -7,7 +7,7 @@
 | Arquivos locais | Busca por arquivos relacionados no projeto/Downloads/Codex | Nenhuma série histórica real localizada |
 | TCC | PDF fornecido e analisado anteriormente | Antecedente, sem comprovar identidade com sensores atuais |
 | Beta | Repositório público `edukarnopp3/edukarnopp3.github.io` | Snapshot de leitura SHA `bd1bece6193b05f84d5233cd7b1d033ce733155e` |
-| Entrada online | API `/api/auth/iseq/login`, `/api/iseq/equipment`, `/api/iseq/jobs` e paginação | Contrato inspecionado e simulado; autenticação real pendente |
+| Entrada online | API `/api/health`, `/api/auth/iseq/login`, `/api/iseq/equipment`, `/api/iseq/jobs`, contagens/cache e paginação | Contrato inspecionado e simulado na 0.1.3; health real expirou/mostrou inicialização Render; autenticação real pendente |
 | Formatos | Aba `Dados brutos` ampla e `Dados` longa ISEQ | Adaptadores implementados; unidade/timestamp devem ser confirmados |
 | Interface beta | Página publicada aberta; entrada ISEQ confirmada visualmente | Telas analíticas autenticadas não foram acessadas |
 

@@ -1,4 +1,4 @@
-export const SOFTWARE_VERSION = '0.1.2';
+export const SOFTWARE_VERSION = '0.1.3';
 export const METHOD_VERSION = 'descritivo-2';
 export const PARAMETERS = {
   CO2: { label: 'CO₂', unit: 'ppm', color: '#3569a8', dark: '#8eb8eb' },

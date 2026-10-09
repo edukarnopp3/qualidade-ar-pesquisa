@@ -1,5 +1,13 @@
 # Histórico
 
+## 0.1.3 — 09/10/2026
+
+Prontidão ISEQ antes do login, prazo separado e cancelamento sem transmitir credenciais; fallback de backend customizado; lista vazia sem chamada redundante; contagens de progresso/cache validadas; job concluído direto para paginação; diagnóstico transitório com cópia segura e limpeza no logout. Fixtures e benchmark integralmente sintéticos. Padrão de dois workers e método `descritivo-2` preservados. [Entrega, evidências e pendências reais](docs/ISEQ-0.1.3.md).
+
+## Plano de desempenho ISEQ — 09/10/2026
+
+Documentado o trabalho incremental para medir as etapas do conector e orientar otimizações. Sem alterações funcionais, acesso autenticado ou publicação. Detalhes em [docs/PLANO-DESEMPENHO-ISEQ.md](docs/PLANO-DESEMPENHO-ISEQ.md).
+
 ## 0.1.2 — 09/10/2026
 
 Correção dos 26 achados da auditoria, com frentes de agentes e integração/revisão de interface. Prazos e recuperação ISEQ; CSV sem coerção, calendário Excel 1904 e validação por aba; bloqueio de sensor/natureza divergentes; CO₂ externo por caso com unidade e fonte; execuções com contexto congelado; edições transacionais; sanitização e contrato de pacotes; pontos isolados no PDF; rótulo móvel. Método `descritivo-2`. Matriz, regressões e evidências em [docs/CORRECOES-0.1.2.md](docs/CORRECOES-0.1.2.md). Login real ISEQ e validação científica permanecem pendentes.

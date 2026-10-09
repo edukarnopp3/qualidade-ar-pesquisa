@@ -17,6 +17,38 @@ const positiveDuration = (value, name) => {
   if (!Number.isFinite(value) || value <= 0 || value > 2147483647) throw new IseqError(`Prazo inválido: ${name}.`, 'invalid_configuration');
   return value;
 };
+const stages = new Set(['health', 'login', 'equipment', 'create_job', 'history', 'download']);
+const now = () => performance.now();
+const elapsed = started => Math.max(0, now() - started);
+const outcome = error => error?.code === 'cancelled' ? 'cancelled' : 'error';
+const emit = (observer, event) => {
+  // Diagnostics are optional and cannot change the connector's result.
+  try { Promise.resolve(observer?.(event)).catch(() => {}); } catch { /* observer failure */ }
+};
+
+function taskCounts(job) {
+  const event = { type: 'tasks' };
+  for (const [source, target] of Object.entries({ total_tasks: 'total', completed_tasks: 'completed', cached_tasks: 'cached', download_tasks: 'downloads', attempted_tasks: 'attempted', worker_count: 'workers', failed_attempts: 'failedAttempts' })) {
+    if (job[source] === undefined) continue;
+    if (!Number.isSafeInteger(job[source]) || job[source] < 0 || (target === 'workers' && (job[source] < 1 || job[source] > 6))) throw schemaError('as contagens de tarefas são inválidas.');
+    event[target] = job[source];
+  }
+  const { total, completed, cached, downloads, attempted } = event;
+  if ([completed, cached, downloads, attempted].some(value => total !== undefined && value !== undefined && value > total)
+    || (cached !== undefined && completed !== undefined && cached > completed)
+    || (attempted !== undefined && downloads !== undefined && attempted > downloads)
+    || (attempted !== undefined && completed !== undefined && cached !== undefined && completed - cached > attempted)
+    || (job.status === 'completed' && total !== undefined && completed !== undefined && completed !== total)
+    || (total !== undefined && cached !== undefined && downloads !== undefined && cached + downloads !== total)) throw schemaError('as contagens de tarefas são inconsistentes.');
+  return event;
+}
+
+function validateJob(job, id) {
+  if (!['queued', 'running', 'completed', 'failed', 'cancelled', 'stale'].includes(job.status)) throw schemaError('o status da importação está ausente ou é inválido.');
+  if (job.id !== undefined && job.id !== id) throw schemaError('o identificador da importação foi alterado na resposta.');
+  if (job.message !== undefined && typeof job.message !== 'string') throw schemaError('a mensagem de progresso é inválida.');
+  return taskCounts(job);
+}
 
 // A rejected race settles even when a custom fetcher or body reader ignores abort.
 // The underlying fetch still receives a signal so native network work is cancelled.
@@ -99,7 +131,12 @@ export class IseqClient {
       operationTimeoutMs: positiveDuration(options.operationTimeoutMs ?? 1200000, 'operação'),
       logoutTimeoutMs: positiveDuration(options.logoutTimeoutMs ?? 8000, 'encerramento remoto'),
       pollIntervalMs: positiveDuration(options.pollIntervalMs ?? 2500, 'intervalo de consulta'),
+      healthTimeoutMs: positiveDuration(options.healthTimeoutMs ?? 90000, 'prontidão do serviço'),
+      healthPollIntervalMs: positiveDuration(options.healthPollIntervalMs ?? 2500, 'intervalo de prontidão'),
+      healthCheck: options.healthCheck ?? true,
+      workers: options.workers ?? 2,
     };
+    if (typeof this.#settings.healthCheck !== 'boolean' || !Number.isInteger(this.#settings.workers) || this.#settings.workers < 1 || this.#settings.workers > 6) throw new IseqError('Configuração de prontidão ou paralelismo inválida.', 'invalid_configuration');
   }
 
   get hasSession() { return this.#token !== null; }
@@ -107,14 +144,16 @@ export class IseqClient {
 
   async request(path, options = {}) {
     if (typeof path !== 'string' || !path.startsWith('/') || path.startsWith('//')) throw new IseqError('Rota de consulta inválida.', 'invalid_request');
-    const { signal, timeoutMs, ...fetchOptions } = options;
+    const { signal, timeoutMs, publicRequest = false, stage, observer, ...fetchOptions } = options;
     const duration = positiveDuration(timeoutMs ?? this.#settings.requestTimeoutMs, 'requisição');
     const scope = abortScope(signal, duration, new IseqError(`O backend não respondeu em ${Math.ceil(duration / 1000)} segundos. Ele pode estar iniciando; tente novamente ou reduza o período.`, 'request_timeout'));
-    const headers = { 'Content-Type': 'application/json', ...(this.#token ? { Authorization: `Bearer ${this.#token}` } : {}), ...fetchOptions.headers };
+    const headers = publicRequest ? { ...fetchOptions.headers } : { 'Content-Type': 'application/json', ...(this.#token ? { Authorization: `Bearer ${this.#token}` } : {}), ...fetchOptions.headers };
     const authorization = headers.Authorization;
     const sessionRevision = this.#sessionRevision;
+    const metrics = { type: 'request', stage, status: null };
+    const started = now();
     try {
-      return await guarded(scope.signal, async () => {
+      const payload = await guarded(scope.signal, async () => {
         let response;
         try { response = await this.fetcher(`${this.base}${path}`, { ...fetchOptions, headers, signal: scope.signal }); }
         catch (cause) {
@@ -124,12 +163,24 @@ export class IseqClient {
         if (scope.signal.aborted) throw cancellation(scope.signal.reason);
         if (!response || typeof response.ok !== 'boolean' || typeof response.json !== 'function') throw schemaError('o transporte não devolveu uma resposta HTTP válida.');
         const status = Number.isInteger(response.status) ? response.status : null;
+        metrics.status = status !== null && status >= 100 && status <= 599 ? status : null;
         // A late response for a previous session cannot invalidate a new login.
         if (status === 401 && sessionRevision === this.#sessionRevision && authorization && authorization === `Bearer ${this.#token}`) this.clearSession();
         const contentType = response.headers?.get?.('content-type');
         if (contentType && !/^application\/(?:[\w.-]+\+)?json(?:\s*;|\s*$)/i.test(contentType)) throw new IseqError('O backend respondeu em formato inesperado, possivelmente uma página de carregamento. Aguarde e tente novamente.', 'invalid_json', status);
         let payload;
-        try { payload = await response.json(); }
+        try {
+          if (typeof response.text === 'function') {
+            const text = await response.text();
+            if (scope.signal.aborted) throw cancellation(scope.signal.reason);
+            metrics.responseBytes = new TextEncoder().encode(text).byteLength;
+            const decodeStarted = now();
+            try { payload = JSON.parse(text); } finally { metrics.decodeMs = elapsed(decodeStarted); }
+          } else {
+            // Compatibility for injected transports that expose only json().
+            payload = await response.json();
+          }
+        }
         catch (cause) {
           if (scope.signal.aborted) throw cancellation(scope.signal.reason);
           throw new IseqError('O backend não devolveu JSON válido. Aguarde e tente novamente.', 'invalid_json', status, cause);
@@ -144,7 +195,55 @@ export class IseqClient {
         }
         return payload;
       });
+      if (stages.has(stage)) emit(observer, { ...metrics, durationMs: elapsed(started), outcome: 'success' });
+      return payload;
+    } catch (error) {
+      if (stages.has(stage)) emit(observer, { ...metrics, durationMs: elapsed(started), outcome: outcome(error) });
+      throw error;
     } finally { scope.dispose(); }
+  }
+
+  async #stage(stage, observer, work) {
+    const started = now();
+    emit(observer, { type: 'stage', stage, state: 'start' });
+    try {
+      const value = await work();
+      emit(observer, { type: 'stage', stage, state: 'end', outcome: stage === 'health' && value === false ? 'unavailable' : 'success', durationMs: elapsed(started) });
+      return value;
+    } catch (error) {
+      emit(observer, { type: 'stage', stage, state: 'end', outcome: outcome(error), durationMs: elapsed(started) });
+      throw error;
+    }
+  }
+
+  async #ready(signal, observer) {
+    return this.#stage('health', observer, async () => {
+      const duration = this.#settings.healthTimeoutMs;
+      const timeout = new IseqError(`O serviço não ficou pronto em ${Math.ceil(duration / 1000)} segundos. Tente novamente em alguns instantes.`, 'health_timeout');
+      const scope = abortScope(signal, duration, timeout);
+      const started = now();
+      try {
+        return await guarded(scope.signal, async () => {
+          for (let attempt = 0; attempt < 36; attempt++) {
+            try {
+              const remaining = duration - elapsed(started);
+              if (remaining <= 0) throw timeout;
+              const payload = await this.request('/api/health', { method: 'GET', publicRequest: true, credentials: 'omit', cache: 'no-store', signal: scope.signal, timeoutMs: Math.min(this.#settings.requestTimeoutMs, remaining), stage: 'health', observer });
+              if (payload.auth_ready === false) throw new IseqError('O serviço respondeu, mas a autenticação está desabilitada por configuração do backend.', 'backend_not_ready');
+              if (payload.status !== 'ok' || (payload.auth_ready !== undefined && payload.auth_ready !== true)) throw schemaError('o serviço não confirmou que está pronto para receber o login.');
+              return true;
+            } catch (error) {
+              if (scope.signal.aborted) throw cancellation(scope.signal.reason);
+              if ([404, 405].includes(error.status) && this.base !== DEFAULT_ISEQ_BACKEND) return false;
+              const retryable = ['network_error', 'request_timeout'].includes(error.code) || (error.code === 'invalid_json' && error.status === 200) || (error.status >= 500 && error.status <= 599);
+              if (!retryable) throw error;
+              if (attempt === 35) throw timeout;
+              await delay(this.#settings.healthPollIntervalMs, scope.signal);
+            }
+          }
+        });
+      } finally { scope.dispose(); }
+    });
   }
 
   async #operation(signal, work) {
@@ -154,18 +253,24 @@ export class IseqClient {
     finally { scope.dispose(); }
   }
 
-  async login(username, password, signal) {
+  async login(username, password, signal, observer = () => {}) {
     this.clearSession();
     const revision = this.#sessionRevision;
     try {
       return await this.#operation(signal, async operationSignal => {
-        const payload = await this.request('/api/auth/iseq/login', { method: 'POST', body: JSON.stringify({ username_or_email: username, password }), signal: operationSignal });
-        if (!isText(payload.session_token) || payload.session_token.length > 4096) throw schemaError('o backend não devolveu uma sessão válida.');
-        if (payload.equipment !== undefined) validateEquipment(payload.equipment);
-        if (operationSignal.aborted) throw cancellation(operationSignal.reason);
-        if (revision !== this.#sessionRevision) throw new IseqError('Esta tentativa de conexão foi substituída ou encerrada.', 'cancelled');
-        this.#token = payload.session_token;
-        const equipment = payload.equipment?.length ? payload.equipment : await this.listEquipment(operationSignal);
+        if (this.#settings.healthCheck) await this.#ready(operationSignal, observer);
+        const payload = await this.#stage('login', observer, async () => {
+          if (operationSignal.aborted) throw cancellation(operationSignal.reason);
+          if (revision !== this.#sessionRevision) throw new IseqError('Esta tentativa de conexão foi substituída ou encerrada.', 'cancelled');
+          const result = await this.request('/api/auth/iseq/login', { method: 'POST', body: JSON.stringify({ username_or_email: username, password }), signal: operationSignal, stage: 'login', observer });
+          if (!isText(result.session_token) || result.session_token.length > 4096) throw schemaError('o backend não devolveu uma sessão válida.');
+          if (result.equipment !== undefined) validateEquipment(result.equipment);
+          if (operationSignal.aborted) throw cancellation(operationSignal.reason);
+          if (revision !== this.#sessionRevision) throw new IseqError('Esta tentativa de conexão foi substituída ou encerrada.', 'cancelled');
+          this.#token = result.session_token;
+          return result;
+        });
+        const equipment = payload.equipment !== undefined ? payload.equipment : await this.listEquipment(operationSignal, observer);
         if (operationSignal.aborted) throw cancellation(operationSignal.reason);
         if (revision !== this.#sessionRevision) throw new IseqError('Esta tentativa de conexão foi substituída ou encerrada.', 'cancelled');
         return equipment; // [] is a valid explicit empty-account state, not a schema error.
@@ -176,9 +281,11 @@ export class IseqClient {
     }
   }
 
-  async listEquipment(signal) {
-    const payload = await this.request('/api/iseq/equipment', { signal });
-    return validateEquipment(payload.equipment);
+  async listEquipment(signal, observer = () => {}) {
+    return this.#stage('equipment', observer, async () => {
+      const payload = await this.request('/api/iseq/equipment', { signal, stage: 'equipment', observer });
+      return validateEquipment(payload.equipment);
+    });
   }
 
   logout() {
@@ -191,32 +298,45 @@ export class IseqClient {
     });
   }
 
-  async historical(equipmentId, start, end, signal, progress = () => {}) {
+  async historical(equipmentId, start, end, signal, progress = () => {}, observer = () => {}) {
     return this.#operation(signal, async operationSignal => {
-      const created = await this.request('/api/iseq/jobs', { method: 'POST', body: JSON.stringify({ equipment_id: equipmentId, start, end, workers: 2 }), signal: operationSignal });
-      if (!isText(created.id)) throw schemaError('a importação não devolveu um identificador válido.');
+      const created = await this.#stage('create_job', observer, async () => {
+        const result = await this.request('/api/iseq/jobs', { method: 'POST', body: JSON.stringify({ equipment_id: equipmentId, start, end, workers: this.#settings.workers }), signal: operationSignal, stage: 'create_job', observer });
+        if (!isText(result.id)) throw schemaError('a importação não devolveu um identificador válido.');
+        if (result.status !== undefined) validateJob(result, result.id);
+        else taskCounts(result);
+        return result;
+      });
       const route = `/api/iseq/jobs/${encodeURIComponent(created.id)}`;
-      while (true) {
-        const job = await this.request(route, { signal: operationSignal });
-        if (!['queued', 'running', 'completed', 'failed', 'cancelled', 'stale'].includes(job.status)) throw schemaError('o status da importação está ausente ou é inválido.');
-        if (job.id !== undefined && job.id !== created.id) throw schemaError('o identificador da importação foi alterado na resposta.');
-        if (job.message !== undefined && typeof job.message !== 'string') throw schemaError('a mensagem de progresso é inválida.');
-        progress(job.message || 'Obtendo histórico na ISEQ…');
-        if (job.status === 'completed') break;
-        if (['failed', 'cancelled', 'stale'].includes(job.status)) throw new IseqError(job.message || 'Importação interrompida na ISEQ.', `job_${job.status}`);
-        await delay(this.#settings.pollIntervalMs, operationSignal);
-      }
-      const rows = [], pageSize = 25000;
-      while (true) {
-        const payload = await this.request(`${route}/data?offset=${rows.length}&limit=${pageSize}`, { signal: operationSignal });
-        if (!Array.isArray(payload.rows) || payload.rows.some(row => !isObject(row)) || typeof payload.has_more !== 'boolean') throw schemaError('a página do histórico não contém linhas e paginação válidas.');
-        if (payload.offset !== undefined && payload.offset !== rows.length) throw schemaError('o deslocamento da página não corresponde às linhas solicitadas.');
-        if (payload.rows.length > pageSize || (payload.rows.length === 0 && payload.has_more)) throw schemaError('a paginação do histórico não avançou ou excedeu o tamanho solicitado.');
-        if (rows.length + payload.rows.length > 250000) throw new IseqError('Limite de 250 mil linhas atingido. Use um período menor.', 'row_limit');
-        rows.push(...payload.rows);
-        progress(`${rows.length.toLocaleString('pt-BR')} linhas recebidas…`);
-        if (!payload.has_more) break;
-      }
+      await this.#stage('history', observer, async () => {
+        let job = created.status !== undefined ? created : await this.request(route, { signal: operationSignal, stage: 'history', observer });
+        while (true) {
+          if (operationSignal.aborted) throw cancellation(operationSignal.reason);
+          const counts = validateJob(job, created.id);
+          if (Object.keys(counts).length > 1) emit(observer, counts);
+          progress(job.message || 'Obtendo histórico na ISEQ…');
+          if (job.status === 'completed') break;
+          if (['failed', 'cancelled', 'stale'].includes(job.status)) throw new IseqError(job.message || 'Importação interrompida na ISEQ.', `job_${job.status}`);
+          await delay(this.#settings.pollIntervalMs, operationSignal);
+          job = await this.request(route, { signal: operationSignal, stage: 'history', observer });
+        }
+      });
+      const rows = await this.#stage('download', observer, async () => {
+        const rows = [], pageSize = 25000;
+        let pages = 0;
+        while (true) {
+          const payload = await this.request(`${route}/data?offset=${rows.length}&limit=${pageSize}`, { signal: operationSignal, stage: 'download', observer });
+          if (!Array.isArray(payload.rows) || payload.rows.some(row => !isObject(row)) || typeof payload.has_more !== 'boolean') throw schemaError('a página do histórico não contém linhas e paginação válidas.');
+          if (payload.offset !== undefined && payload.offset !== rows.length) throw schemaError('o deslocamento da página não corresponde às linhas solicitadas.');
+          if (payload.rows.length > pageSize || (payload.rows.length === 0 && payload.has_more)) throw schemaError('a paginação do histórico não avançou ou excedeu o tamanho solicitado.');
+          if (rows.length + payload.rows.length > 250000) throw new IseqError('Limite de 250 mil linhas atingido. Use um período menor.', 'row_limit');
+          rows.push(...payload.rows);
+          emit(observer, { type: 'download', rows: rows.length, pages: ++pages });
+          progress(`${rows.length.toLocaleString('pt-BR')} linhas recebidas…`);
+          if (!payload.has_more) break;
+        }
+        return rows;
+      });
       return { rows, jobId: created.id, equipmentId, start, end, backend: this.base };
     });
   }

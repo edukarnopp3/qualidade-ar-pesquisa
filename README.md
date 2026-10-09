@@ -1,6 +1,6 @@
 # Qualidade do ar — análise histórica
 
-Ferramenta de pesquisa de Eduardo para análise histórica rastreável de sensores em uma escola e em ambiente hospitalar. Versão **0.1.2**, com correções dos 26 achados da auditoria funcional; avaliação científica e aplicação com dados reais pendentes.
+Ferramenta de pesquisa de Eduardo para análise histórica rastreável de sensores em uma escola e em ambiente hospitalar. Versão **0.1.3**, com diagnóstico de tempos e progresso/cache ISEQ, após as correções da auditoria funcional. Avaliação científica e aplicação com dados reais pendentes.
 
 **[Abrir a aplicação](https://edukarnopp3.github.io/qualidade-ar-pesquisa/)** · [Estado da entrega](docs/EXECUCAO.md) · [Plano de pesquisa e software](docs/pesquisa/PLANO.md)
 
@@ -24,7 +24,7 @@ Acesse **http://127.0.0.1:8765/**. O site carrega o programa e as bibliotecas da
 - Catálogo de referências cadastradas pelo pesquisador, com bloqueio por escopo, unidade, método, janela, frequência e suficiência.
 - PDF local, Excel/CSV e pacotes completos/compartilháveis, reabertura preservada e reprocessamento explícito.
 - Temas claro/escuro e sistema visual adaptado do shell Nexo aprovado.
-- Conector opcional para o backend ISEQ utilizado pelo beta: autenticação, lista de sensores, histórico por período, paginação e cancelamento da espera.
+- Conector opcional ISEQ: verificação prévia do serviço, autenticação, lista de sensores, histórico por período, progresso/cache, paginação, cancelamento e diagnóstico transitório sem credenciais ou leituras.
 
 O aplicativo inicia vazio. **Explorar demonstração** cria casos integralmente sintéticos. `examples/` contém planilhas sintéticas para exercitar a importação. O critério didático de 1.200 ppm e 75% é arbitrário e não representa norma ou recomendação de saúde.
 
@@ -34,10 +34,13 @@ Eduardo confirmou que os históricos usados antes eram obtidos online da ISEQ. O
 
 Não inclua credenciais no Git ou nos pacotes. Esta entrega testou o conector com respostas controladas, sem autenticação real. Disponibilidade, CORS e acesso aos dados reais dependem do serviço e da conta do usuário. A porta local 8765 coincide com a origem permitida por padrão no backend do beta. GitHub Pages usa a mesma origem `https://edukarnopp3.github.io` do beta.
 
+Entrega de desempenho e seus limites: [docs/ISEQ-0.1.3.md](docs/ISEQ-0.1.3.md). A rota pública do serviço real permaneceu sem resposta JSON na conferência; a autenticação e os tempos reais da ISEQ continuam pendentes. O [plano](docs/PLANO-DESEMPENHO-ISEQ.md) registra as decisões condicionadas às medições.
+
 ## Documentação
 
 - [Execução, estado e pendências](docs/EXECUCAO.md)
 - [Correções e evidências da versão 0.1.2](docs/CORRECOES-0.1.2.md)
+- [Conexão, cache e diagnóstico ISEQ da versão 0.1.3](docs/ISEQ-0.1.3.md)
 - [Plano integrado de pesquisa e software](docs/pesquisa/PLANO.md)
 - [Método computacional](docs/METODO.md)
 - [Interface e tokens Nexo](docs/DESIGN-SYSTEM.md)

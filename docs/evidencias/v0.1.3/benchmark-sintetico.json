@@ -1,0 +1,108 @@
+{
+  "notice": "simulado; não prova desempenho ISEQ real",
+  "repetitions": 5,
+  "totalTasks": 9,
+  "taskLatencyMs": 40,
+  "transportLatencyMs": 2,
+  "defaultWorkersUnchanged": 2,
+  "networkRequestsToRealISEQ": 0,
+  "failuresAndRetriesAreSynthetic": true,
+  "comparison": [
+    {
+      "workers": 2,
+      "uncached": {
+        "durationMsMedian": 250.83,
+        "rowsMedian": 288,
+        "requestsMedian": 9,
+        "pollsMedian": 7,
+        "pagesMedian": 1,
+        "responseBytesMedian": 66000,
+        "errorsMedian": 0,
+        "retriesMedian": 0,
+        "tasksDownloadedMedian": 9,
+        "tasksCachedMedian": 0
+      },
+      "cachedRepeat": {
+        "durationMsMedian": 31.63,
+        "rowsMedian": 288,
+        "requestsMedian": 2,
+        "pollsMedian": 0,
+        "pagesMedian": 1,
+        "responseBytesMedian": 62189,
+        "errorsMedian": 0,
+        "retriesMedian": 0,
+        "tasksDownloadedMedian": 0,
+        "tasksCachedMedian": 9
+      }
+    },
+    {
+      "workers": 3,
+      "uncached": {
+        "durationMsMedian": 156.17,
+        "rowsMedian": 288,
+        "requestsMedian": 6,
+        "pollsMedian": 4,
+        "pagesMedian": 1,
+        "responseBytesMedian": 64355,
+        "errorsMedian": 0,
+        "retriesMedian": 0,
+        "tasksDownloadedMedian": 9,
+        "tasksCachedMedian": 0
+      },
+      "cachedRepeat": {
+        "durationMsMedian": 31.45,
+        "rowsMedian": 288,
+        "requestsMedian": 2,
+        "pollsMedian": 0,
+        "pagesMedian": 1,
+        "responseBytesMedian": 62189,
+        "errorsMedian": 0,
+        "retriesMedian": 0,
+        "tasksDownloadedMedian": 0,
+        "tasksCachedMedian": 9
+      }
+    }
+  ],
+  "pagination100000Rows": {
+    "durationMs": 273.59,
+    "rows": 100000,
+    "requests": 5,
+    "polls": 0,
+    "pages": 4,
+    "responseBytes": 21388726,
+    "errors": 0,
+    "retries": 0,
+    "tasksDownloaded": 0,
+    "tasksCached": 0
+  },
+  "statusPayloads": [
+    {
+      "tasks": 9,
+      "responseBytes": 1815,
+      "parseMsMedian": 0
+    },
+    {
+      "tasks": 3285,
+      "responseBytes": 604605,
+      "parseMsMedian": 1.95
+    }
+  ],
+  "localPreparation": [
+    {
+      "rows": 1000,
+      "serializeMsMedian": 0.76,
+      "encodeMsMedian": 0.3,
+      "parseMsMedian": 0.92,
+      "hashMsMedian": 0.12,
+      "bytesMedian": 213891
+    },
+    {
+      "rows": 100000,
+      "serializeMsMedian": 50.02,
+      "encodeMsMedian": 21.97,
+      "parseMsMedian": 74.64,
+      "hashMsMedian": 9.83,
+      "bytesMedian": 21388341
+    }
+  ]
+}

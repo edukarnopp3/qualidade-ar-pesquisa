@@ -5,6 +5,7 @@ import { createDemoCases } from './demo.js';
 import { download, filename } from './utils.js';
 import { execute } from './engine.js';
 import { IseqClient, DEFAULT_ISEQ_BACKEND } from './iseq.js';
+import { beginIseqProgress, appendIseqReports, clearIseqReports } from './iseq-progress.js';
 import { validateSelectedSheet } from './importer.js';
 import { createExecution, executionDataset, cloneCase, validateCaseNature, validateOutdoorContext, commitCaseChange } from './executions.js';
 
@@ -180,6 +181,7 @@ function importDialog() {
   el.querySelector('#sheet').addEventListener('change', event => { pending.selectedSheet = event.target.value; importDialog(); });
   if (sheet.validationErrors?.length) el.querySelector('#dialog-error').textContent = sheet.validationErrors.join(' ');
   if (input.synthetic) el.querySelector('[name=synthetic]').disabled = true;
+  if (input.origin === 'iseq') appendIseqReports(el);
   el.querySelector('#target-case').addEventListener('change', event => { const target = state.cases.find(c => c.id === event.target.value); if (!target) return; for (const [name, value] of Object.entries({ name: target.name, sensorId: target.sensorId, sensorLabel: target.sensorLabel, environment: target.environment, offset: target.offsetMinutes, cadence: target.nominalIntervalSeconds || '' })) el.querySelector(`[name="${name}"]`).value = value; });
 }
 function ruleDialog() {
@@ -231,24 +233,9 @@ function reviewDialog(id) {
     el.close(); render(); toast('Decisão preservada. Os resultados foram recalculados.');
   });
 }
-function beginIseqProgress(element, abort, message) {
-  let progress = element.querySelector('#iseq-progress');
-  if (!progress) { progress = document.createElement('div'); progress.id = 'iseq-progress'; progress.setAttribute('role', 'status'); progress.setAttribute('aria-live', 'polite'); element.querySelector('.dialog-body').append(progress); }
-  progress.innerHTML = '<div class="busy"><span class="spinner" aria-hidden="true"></span><span id="iseq-progress-text"></span></div><button type="button" id="cancel-iseq">Cancelar espera</button>';
-  const started = Date.now(), label = progress.querySelector('#iseq-progress-text');
-  let latest = message;
-  const update = () => { label.textContent = latest + ' · ' + Math.floor((Date.now() - started) / 1000) + ' s'; };
-  update(); const timer = setInterval(update, 1000);
-  const close = () => abort.abort();
-  element.addEventListener('close', close, { once: true });
-  progress.querySelector('#cancel-iseq').onclick = close;
-  return {
-    update(message) { latest = message; update(); },
-    end() { clearInterval(timer); element.removeEventListener('close', close); progress.replaceChildren(); },
-  };
-}
 function endIseqSession(element) {
   const client = iseq; iseq = null; equipment = [];
+  clearIseqReports();
   const revoke = client?.logout();
   if (revoke) void revoke.catch(() => {});
   element.close(); toast('Sessão local encerrada.');
@@ -263,34 +250,39 @@ function expiredIseq(client, error, element) {
 function emptyEquipmentDialog() {
   const client = iseq;
   const el = dialog('Nenhum sensor disponível', 'A conta autenticada não possui sensores disponíveis para consulta.', '<p>A lista recebida está vazia. Atualize a lista ou encerre a sessão para usar outra conta.</p>', '<button type="button" id="iseq-logout">Sair da ISEQ</button><button type="submit" class="primary">Atualizar sensores</button>', async (data, element) => {
-    const abort = new AbortController(), progress = beginIseqProgress(element, abort, 'Atualizando a lista de sensores');
+    const abort = new AbortController(), progress = beginIseqProgress(element, abort, 'Atualizando a lista de sensores', 'equipment');
+    let outcome = 'error';
     try {
-      const next = await client.listEquipment(abort.signal);
+      const next = await client.listEquipment(abort.signal, progress.observe);
       if (abort.signal.aborted || !element.isConnected || !element.open || iseq !== client) return;
       equipment = next;
-      if (next.length) { element.close(); iseqPeriodDialog(); }
+      if (next.length) { outcome = 'success'; progress.end(outcome); element.close(); iseqPeriodDialog(); }
       else throw new Error('A conta continua sem sensores disponíveis.');
     } catch (error) { if (!expiredIseq(client, error, element)) throw error; }
-    finally { progress.end(); }
+    finally { progress.end(outcome); }
   });
   el.querySelector('#iseq-logout').onclick = () => endIseqSession(el);
+  appendIseqReports(el);
 }
 function iseqDialog() {
   if (iseq?.hasSession) return equipment.length ? iseqPeriodDialog() : emptyEquipmentDialog();
   iseq = null; equipment = [];
-  dialog('Obter histórico da ISEQ', 'Integração opcional com o backend já utilizado pela página beta.', `<div class="notice">${icon('globe')}<p>Este modo envia o login ao backend indicado para autenticar na ISEQ. Esse serviço tem armazenamento próprio, conforme o beta. A análise recebida aqui é local. A senha e a sessão não entram em pacotes ou arquivos salvos.</p></div><div class="form-grid"><div class="field full"><label for="iseq-backend">Endereço do backend</label><input id="iseq-backend" name="backend" type="url" value="${DEFAULT_ISEQ_BACKEND}" required></div><div class="field"><label for="iseq-user">Usuário ou e-mail ISEQ</label><input id="iseq-user" name="username" autocomplete="username" required></div><div class="field"><label for="iseq-password">Senha ISEQ</label><input id="iseq-password" name="password" type="password" autocomplete="off" required></div></div><label class="check-row"><input type="checkbox" name="consent" required><span>Confirmo o backend indicado e autorizo a autenticação desta conta para obter meus históricos.</span></label><p class="small-text muted" style="margin-top:18px">Cada requisição tem limite de 45 segundos. O serviço pode precisar iniciar. Você pode cancelar a espera a qualquer momento.</p>`, '<button type="submit" class="primary">Entrar e listar sensores</button>', async (data, element) => {
+  const el = dialog('Obter histórico da ISEQ', 'Integração opcional com o backend já utilizado pela página beta.', `<div class="notice">${icon('globe')}<p>Este modo envia o login ao backend indicado para autenticar na ISEQ. Esse serviço tem armazenamento próprio, conforme o beta. A análise recebida aqui é local. A senha e a sessão não entram em pacotes ou arquivos salvos.</p></div><div class="form-grid"><div class="field full"><label for="iseq-backend">Endereço do backend</label><input id="iseq-backend" name="backend" type="url" value="${DEFAULT_ISEQ_BACKEND}" required></div><div class="field"><label for="iseq-user">Usuário ou e-mail ISEQ</label><input id="iseq-user" name="username" autocomplete="username" required></div><div class="field"><label for="iseq-password">Senha ISEQ</label><input id="iseq-password" name="password" type="password" autocomplete="current-password" required></div></div><label class="check-row"><input type="checkbox" name="consent" required><span>Confirmo o backend indicado e autorizo a autenticação desta conta para obter meus históricos.</span></label><p class="small-text muted" style="margin-top:18px">Primeiro verificamos se o serviço está pronto, por até 90 segundos. Depois iniciamos a entrada. Você pode cancelar a espera a qualquer momento.</p>`, '<button type="submit" class="primary">Entrar e listar sensores</button>', async (data, element) => {
     const passwordField = element.querySelector('#iseq-password');
     const password = String(data.get('password'));
     passwordField.value = '';
     const client = new IseqClient(String(data.get('backend'))), abort = new AbortController();
-    const progress = beginIseqProgress(element, abort, 'Conectando à ISEQ');
+    const progress = beginIseqProgress(element, abort, 'Aguardando o serviço', 'login');
+    let outcome = 'error';
     try {
-      const next = await client.login(String(data.get('username')), password, abort.signal);
+      const next = await client.login(String(data.get('username')), password, abort.signal, progress.observe);
       if (abort.signal.aborted || !element.isConnected || !element.open) { client.clearSession(); return; }
       iseq = client; equipment = next;
+      outcome = 'success'; progress.end(outcome);
       element.close(); next.length ? iseqPeriodDialog() : emptyEquipmentDialog();
-    } finally { progress.end(); }
+    } finally { progress.end(outcome); }
   });
+  appendIseqReports(el);
 }
 function iseqPeriodDialog() {
   const client = iseq;
@@ -303,19 +295,27 @@ function iseqPeriodDialog() {
     const item = equipment.find(item => item.mac === data.get('equipment'));
     if (!item) throw new Error('Selecione um sensor da lista recebida.');
     const abort = new AbortController(), progress = beginIseqProgress(element, abort, 'Consultando histórico');
+    let outcome = 'error';
     try {
-      const result = await client.historical(item.mac, data.get('start') + 'T00:00:00', data.get('end') + 'T23:59:59', abort.signal, message => progress.update(message));
+      const result = await client.historical(item.mac, data.get('start') + 'T00:00:00', data.get('end') + 'T23:59:59', abort.signal, progress.update, progress.observe);
       if (abort.signal.aborted || !element.isConnected || !element.open || iseq !== client) return;
       if (!result.rows.length) throw new Error('O serviço respondeu corretamente, mas não há registros nesse período.');
-      const bytes = new TextEncoder().encode(JSON.stringify(result)), headers = [...new Set(result.rows.flatMap(row => Object.keys(row)))];
-      const hash = await sha256(bytes);
+      const { bytes, headers, hash } = await progress.measure('prepare', async () => {
+        // Yield so the phase is painted before serialization starts.
+        await new Promise(resolve => setTimeout(resolve, 0));
+        if (abort.signal.aborted) throw new DOMException('Espera cancelada.', 'AbortError');
+        const bytes = new TextEncoder().encode(JSON.stringify(result)), headers = [...new Set(result.rows.flatMap(row => Object.keys(row)))];
+        return { bytes, headers, hash: await sha256(bytes) };
+      });
       if (abort.signal.aborted || !element.isConnected || !element.open || iseq !== client) return;
       pending = { name: 'ISEQ-' + data.get('start') + '-' + data.get('end') + '.json', size: bytes.length, bytes, hash, origin: 'iseq', selectedSheet: 'Histórico ISEQ', sheets: [{ name: 'Histórico ISEQ', headers, rows: result.rows, mapping: inferMapping(headers), originalSensorId: item.mac }], context: { sensorId: item.mac, sensorLabel: label(item), name: label(item) } };
+      outcome = 'success'; progress.end(outcome);
       element.close(); importDialog();
     } catch (error) { if (!expiredIseq(client, error, element)) throw error; }
-    finally { progress.end(); }
+    finally { progress.end(outcome); }
   });
   el.querySelector('#iseq-logout').onclick = () => endIseqSession(el);
+  appendIseqReports(el);
 }
 
 app.addEventListener('change', async event => {
