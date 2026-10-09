@@ -1,0 +1,23 @@
+{
+  "full": {
+    "id": "b5c53e40-0ade-424c-8931-b91d3c470546",
+    "name": "CONTROLE FICTÍCIO · CSV brasileiro",
+    "frequency": 86400,
+    "mean": 650.5,
+    "observations": 2
+  },
+  "shared": {
+    "id": "b5c53e40-0ade-424c-8931-b91d3c470546",
+    "hasInputs": false,
+    "observations": 0,
+    "decisions": 0
+  },
+  "excel": {
+    "frequency": 86400,
+    "sensor": "AUDIT-SCHOOL"
+  },
+  "pdf": {
+    "windows": 1,
+    "mean": 600
+  }
+}

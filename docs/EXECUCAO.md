@@ -1,4 +1,4 @@
-# Execução em 08/10/2026
+# Execução — registros de 08 e 09/10/2026
 
 ## Decisões aprovadas
 
@@ -42,7 +42,7 @@ Esta falha era anterior a qualquer resposta do backend e não demonstra erro na 
 - Página pública conferida em `https://edukarnopp3.github.io/qualidade-ar-pesquisa/?v=0.1.1`, exibindo a versão 0.1.1. Evidência sem credenciais em `docs/evidencias/versao-0.1.1.jpg`.
 - Uma consulta HTTP ao backend expirou em 20 segundos. No navegador, `/api/health` mostrou a página do Render “Application loading”, com indicação de inicialização do serviço, em vez de uma resposta JSON da aplicação. Essa observação é separada da falha corrigida de contexto do fetch.
 
-Nenhuma credencial real foi enviada durante esta correção. A publicação foi confirmada; o login real e o download autenticado de histórico ainda não foram validados. Após atualizar a página, a versão visível deve ser 0.1.1.
+Nenhuma credencial real foi enviada durante esta correção. A publicação da 0.1.1 foi confirmada naquele momento; o login real e o download autenticado de histórico ainda não foram validados. A versão seguinte está registrada abaixo.
 
 ## Pendências científicas e operacionais
 
@@ -50,7 +50,7 @@ Nenhuma credencial real foi enviada durante esta correção. A publicação foi 
 
 No código `29ed8aaf6eba5cdcb9ee8867b7b82f1abcb272f0` (0.1.1), três agentes e a revisão de navegador confirmaram **26 famílias de falhas: 8 P1, 15 P2 e 3 P3**. O login com servidor controlado permaneceu bloqueado por 75 segundos, sem prazo, progresso ou cancelamento. A autenticação/histórico rápidos funcionaram no controle sintético; login real e disponibilidade/CORS de produção continuam não validados.
 
-Os 24 testes existentes passaram. A ampliação de cobertura encontrou defeitos que esses testes não exercitavam, incluindo CSV, calendário Excel, identidade e natureza da origem, contexto externo/histórico, esquema/sanitização de pacotes e estados de interface. Nenhuma correção do código de produção foi aplicada na auditoria. [Relatório completo](../audits/2026-10-08/RELATORIO.md), [relatórios por área e reproduções](../audits/2026-10-08/REPRODUCAO.md). As falhas prioritárias devem ser corrigidas e reproduzidas novamente antes do piloto científico.
+Os 24 testes existentes passaram. A ampliação de cobertura encontrou defeitos que esses testes não exercitavam, incluindo CSV, calendário Excel, identidade e natureza da origem, contexto externo/histórico, esquema/sanitização de pacotes e estados de interface. Nenhuma correção do código de produção foi aplicada **naquela entrega de auditoria**. [Relatório completo](../audits/2026-10-08/RELATORIO.md), [relatórios por área e reproduções](../audits/2026-10-08/REPRODUCAO.md). As correções posteriores estão registradas na seção 0.1.2.
 
 1. Obter a primeira consulta histórica real na ISEQ, com autenticação da conta do pesquisador. Nenhuma credencial foi solicitada em chat nem incorporada ao código.
 2. Confirmar fabricante/modelo, unidades reais, princípio de medição, frequência nominal e metadados de cada ambiente. COVs/NOx continuam descritivos quando unidade/validade não foram confirmadas.
@@ -62,3 +62,15 @@ Os 24 testes existentes passaram. A ampliação de cobertura encontrou defeitos 
 ## Escopo que permanece posterior
 
 Tempo real, alertas, previsão, controle de ventilação, contas do software, nuvem/collaboração e certificação automática. A conexão histórica ISEQ não constitui monitoramento contínuo.
+
+## Correção 0.1.2 — 09/10/2026
+
+Após autorização de Eduardo, os 26 achados foram corrigidos com agentes especializados e integração/revisão de navegador. [Matriz de fechamento, evidências e limites](CORRECOES-0.1.2.md). Método passou a `descritivo-2` por correções de entrada e contexto.
+
+O navegador confirmou recuperação após timeout de45 s/cancelamento, fechamento e resposta tardia, conta vazia, erro 500, sessão 401 e logout remoto pendente; CSV com dd/MM e decimal brasileiro; bloqueios de sensor/natureza divergentes; contexto externo independente de regras/casos; snapshot histórico e exportações; reabertura completa/compartilhável; nova execução explícita; rótulo em 390 px. Todos os dados/credenciais desses controles eram fictícios.
+
+O PDF de uma única média 600 foi renderizado com Poppler e o ponto está visível. Excel e pacotes baixados no navegador foram confrontados programaticamente: frequência 86400 s e contexto original preservados após uma alteração posterior. A revisão cruzada acrescentou correções de série constante, tolerância decimal, distribuição e fuso do pacote e troca de caso transacional. As contagens finais de testes/build/publicação acompanham o registro de fechamento.
+
+Rodada final local: **97/97 testes aprovados**, zero falhas, build concluído (806 módulos). Os callbacks reais da interface têm 11 regressões de troca transacional e leitura/abertura concorrente. Evidência integral em [testes-finais.txt](evidencias/v0.1.2/testes-finais.txt).
+
+As pendências científicas e o login real da ISEQ permanecem as listadas acima. A correção do cliente não muda disponibilidade/autenticação do backend externo.

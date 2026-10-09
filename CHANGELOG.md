@@ -1,5 +1,9 @@
 # Histórico
 
+## 0.1.2 — 09/10/2026
+
+Correção dos 26 achados da auditoria, com frentes de agentes e integração/revisão de interface. Prazos e recuperação ISEQ; CSV sem coerção, calendário Excel 1904 e validação por aba; bloqueio de sensor/natureza divergentes; CO₂ externo por caso com unidade e fonte; execuções com contexto congelado; edições transacionais; sanitização e contrato de pacotes; pontos isolados no PDF; rótulo móvel. Método `descritivo-2`. Matriz, regressões e evidências em [docs/CORRECOES-0.1.2.md](docs/CORRECOES-0.1.2.md). Login real ISEQ e validação científica permanecem pendentes.
+
 ## Auditoria funcional — 08/10/2026
 
 Auditoria multiagente da versão 0.1.1: 26 famílias de falhas reproduzidas e documentadas, com gabaritos, scripts sintéticos, capturas e ordem de correção em `audits/2026-10-08/`. Os 24 testes anteriores continuam aprovados, mas não cobriam essas falhas. Código de produção preservado nesta entrega documental; não constitui lançamento de uma versão corrigida.

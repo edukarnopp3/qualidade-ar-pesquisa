@@ -1,6 +1,6 @@
 # Qualidade do ar — análise histórica
 
-Ferramenta de pesquisa de Eduardo para análise histórica rastreável de sensores em uma escola e em ambiente hospitalar. Versão **0.1.1**, primeira implementação funcional com correção do conector ISEQ; avaliação científica e aplicação com dados reais pendentes.
+Ferramenta de pesquisa de Eduardo para análise histórica rastreável de sensores em uma escola e em ambiente hospitalar. Versão **0.1.2**, com correções dos 26 achados da auditoria funcional; avaliação científica e aplicação com dados reais pendentes.
 
 **[Abrir a aplicação](https://edukarnopp3.github.io/qualidade-ar-pesquisa/)** · [Estado da entrega](docs/EXECUCAO.md) · [Plano de pesquisa e software](docs/pesquisa/PLANO.md)
 
@@ -37,6 +37,7 @@ Não inclua credenciais no Git ou nos pacotes. Esta entrega testou o conector co
 ## Documentação
 
 - [Execução, estado e pendências](docs/EXECUCAO.md)
+- [Correções e evidências da versão 0.1.2](docs/CORRECOES-0.1.2.md)
 - [Plano integrado de pesquisa e software](docs/pesquisa/PLANO.md)
 - [Método computacional](docs/METODO.md)
 - [Interface e tokens Nexo](docs/DESIGN-SYSTEM.md)
@@ -50,7 +51,7 @@ Não inclua credenciais no Git ou nos pacotes. Esta entrega testou o conector co
 
 ### Auditoria funcional de 08/10/2026
 
-A auditoria multiagente da versão 0.1.1 confirmou **26 famílias de falhas**, incluindo espera sem limite da ISEQ, interpretação de CSV, identidade de sensor, natureza sintética e contexto de execuções. Os 24 testes existentes passaram, mas não cobriam esses cenários. Consulte o [relatório e a ordem de correção](audits/2026-10-08/RELATORIO.md) e as [reproduções controladas](audits/2026-10-08/REPRODUCAO.md). Os achados permanecem pendentes de correção; a auditoria não valida o uso científico com dados reais.
+A auditoria multiagente da versão 0.1.1 confirmou **26 famílias de falhas**. Os achados foram corrigidos na **0.1.2**, com regressões automatizadas e conferência dos fluxos no navegador. Consulte a [matriz de correções e seus limites](docs/CORRECOES-0.1.2.md). O [relatório original](audits/2026-10-08/RELATORIO.md) e as [reproduções](audits/2026-10-08/REPRODUCAO.md) preservam o comportamento da versão auditada; seus scripts demonstram defeitos antigos e não são testes de aprovação da versão corrigida.
 
 ```powershell
 npm test

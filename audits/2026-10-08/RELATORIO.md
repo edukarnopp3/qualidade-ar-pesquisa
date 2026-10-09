@@ -2,6 +2,8 @@
 
 **Data:** 08/10/2026, America/Sao_Paulo. **Versão:** 0.1.1. **Código auditado:** `29ed8aaf6eba5cdcb9ee8867b7b82f1abcb272f0`.
 
+**Registro posterior:** os 26 achados foram corrigidos na 0.1.2. Consulte a [matriz de fechamento e evidências](../../docs/CORRECOES-0.1.2.md). O texto e os scripts abaixo preservam a auditoria histórica da 0.1.1.
+
 ## Resultado
 
 **26 famílias de falhas confirmadas: 8 P1, 15 P2 e 3 P3.** Três agentes auditaram conexão, cálculo científico e arquivos; o coordenador reproduziu usos da interface em navegador. A rodada interrompida por limite de uso foi retomada até concluir os três relatórios. Achados repetidos entre agentes/navegador foram consolidados, sem somar o mesmo defeito duas vezes.

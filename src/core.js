@@ -1,5 +1,5 @@
-export const SOFTWARE_VERSION = '0.1.1';
-export const METHOD_VERSION = 'descritivo-1';
+export const SOFTWARE_VERSION = '0.1.2';
+export const METHOD_VERSION = 'descritivo-2';
 export const PARAMETERS = {
   CO2: { label: 'CO₂', unit: 'ppm', color: '#3569a8', dark: '#8eb8eb' },
   'PM2.5': { label: 'PM₂,₅', unit: 'µg/m³', color: '#8052aa', dark: '#c4a5e4' },
@@ -26,11 +26,16 @@ export function numeric(value) {
   } else text = text.replace(',', '.');
   return /^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[-+]?\d+)?$/i.test(text) && Number.isFinite(Number(text)) ? Number(text) : null;
 }
-export function parseTimestamp(value, offsetMinutes = -180) {
+export function parseTimestamp(value, offsetMinutes = -180, { date1904 = false } = {}) {
   if (value instanceof Date) return Number.isFinite(value.getTime()) ? value.getTime() : null;
   if (typeof value === 'number' && Number.isFinite(value)) {
-    if (value < 1 || value > 100000) return null;
-    return Math.round((value - 25569) * 86400000) - offsetMinutes * 60000;
+    if (value < (date1904 ? 0 : 1) || value > 100000) return null;
+    // Excel's 1900 calendar contains a fictional 29/02/1900. Preserve the
+    // serial in normalization, but do not invent a Gregorian timestamp for it.
+    if (!date1904 && Math.floor(value) === 60) return null;
+    const epoch = date1904 ? Date.UTC(1904, 0, 1) : Date.UTC(1899, 11, 30);
+    const days = !date1904 && value < 60 ? value + 1 : value;
+    return epoch + Math.round(days * 86400000) - offsetMinutes * 60000;
   }
   const text = String(value ?? '').trim();
   if (/^\d{4}-\d{2}-\d{2}T.*(?:Z|[+-]\d{2}:?\d{2})$/i.test(text)) {
@@ -54,9 +59,21 @@ export function localIso(timestamp, offsetMinutes = -180) { return new Date(time
 export function stats(values) {
   const numbers = values.filter(Number.isFinite).sort((a, b) => a - b);
   if (!numbers.length) return { n: 0, mean: null, median: null, min: null, max: null, p95: null, sd: null };
-  const n = numbers.length, mean = numbers.reduce((sum, v) => sum + v, 0) / n;
-  const quantile = (p) => { const index = (n - 1) * p; const low = Math.floor(index); return numbers[low] + (index - low) * (numbers[Math.ceil(index)] - numbers[low]); };
-  return { n, mean, median: quantile(.5), min: numbers[0], max: numbers[n - 1], p95: quantile(.95), sd: Math.sqrt(numbers.reduce((sum, v) => sum + (v - mean) ** 2, 0) / n) };
+  const n = numbers.length, scale = Math.max(Math.abs(numbers[0]), Math.abs(numbers[n - 1]));
+  const total = numbers.reduce((sum, v) => sum + v, 0);
+  // Keep the familiar arithmetic path for ordinary values. Normalization by
+  // the largest magnitude prevents overflow for otherwise finite input.
+  const scaledMean = scale ? Math.max(-1, Math.min(1, numbers.reduce((sum, v) => sum + v / scale, 0) / n)) : 0;
+  const mean = Number.isFinite(total) ? total / n : scaledMean * scale;
+  const quantile = (p) => { const index = (n - 1) * p; const low = Math.floor(index); return interpolate(numbers[low], numbers[Math.ceil(index)], index - low); };
+  const squared = numbers.reduce((sum, v) => sum + (v - mean) ** 2, 0);
+  const scaledVariance = scale ? numbers.reduce((sum, v) => sum + (v / scale - mean / scale) ** 2, 0) / n : 0;
+  const sd = Number.isFinite(squared) ? Math.sqrt(squared / n) : Math.min(1, Math.sqrt(scaledVariance)) * scale;
+  return { n, mean, median: quantile(.5), min: numbers[0], max: numbers[n - 1], p95: quantile(.95), sd };
+}
+function interpolate(low, high, fraction) {
+  const difference = high - low;
+  return Number.isFinite(difference) ? low + fraction * difference : low * (1 - fraction) + high * fraction;
 }
 export function inferInterval(observations) {
   const times = [...new Set(observations.map(o => o.timestamp))].sort((a, b) => a - b);
@@ -65,10 +82,18 @@ export function inferInterval(observations) {
 }
 export function normalizeRows(rows, mapping, context, sourceId) {
   const observations = [], issues = [];
+  const declaredId = String(context.sensorId ?? '').trim();
+  const sourceIds = new Set(mapping.sensor ? rows.map(row => String(row[mapping.sensor] ?? '').trim()).filter(Boolean) : []);
+  if (context.originalSensorId != null && String(context.originalSensorId).trim()) sourceIds.add(String(context.originalSensorId).trim());
+  if (sourceIds.size > 1) throw new Error('A aba contém identificadores de vários sensores. Importe cada sensor em um caso separado.');
+  const sourceSensorId = [...sourceIds][0] ?? null;
+  if (sourceSensorId && sourceSensorId !== declaredId) throw new Error(`O identificador do arquivo (${sourceSensorId}) difere do sensor do caso (${declaredId || 'não informado'}). Crie ou selecione o caso correspondente.`);
+  const date1904 = Boolean(mapping.date1904 ?? context.date1904);
   let rejectedRows = 0;
   for (let i = 0; i < rows.length; i++) {
-    const row = rows[i], rowNumber = i + 2;
-    const timestamp = parseTimestamp(row[mapping.date], context.offsetMinutes);
+    const row = rows[i], rowNumber = i + (context.rowStart ?? mapping.rowStart ?? 2);
+    const originalTime = row[mapping.date];
+    const timestamp = parseTimestamp(originalTime, context.offsetMinutes, { date1904 });
     if (timestamp == null) { issues.push({ rowNumber, sourceId, code: 'data_invalida', detail: String(row[mapping.date] ?? 'Data ausente') }); rejectedRows++; continue; }
     const pairs = mapping.format === 'long' ? [[parameterKey(row[mapping.parameter]), mapping.value]] : Object.entries(mapping.columns);
     let found = 0;
@@ -81,7 +106,7 @@ export function normalizeRows(rows, mapping, context, sourceId) {
       if ((['CO2', 'PM1', 'PM2.5', 'PM10'].includes(parameter) && value < 0) || (parameter === 'Umid' && (value < 0 || value > 100))) flags.push('fora_dominio_fisico');
       const unit = mapping.format === 'long' && mapping.unit ? String(row[mapping.unit] ?? '').trim() : context.units?.[parameter]?.unit ?? PARAMETERS[parameter].unit;
       if (context.units?.[parameter]?.unit && unit !== context.units[parameter].unit) flags.push('unidade_incompativel');
-      observations.push({ id: `${sourceId}:${rowNumber}:${parameter}`, sourceId, rowNumber, timestamp, originalTime: String(row[mapping.date]), sensorId: context.sensorId, parameter, value, unit, originalUnit: mapping.format === 'long' && mapping.unit ? unit : null, unitSource: mapping.format === 'long' && mapping.unit ? 'file' : 'context', unitConfirmed: Boolean(context.units?.[parameter]?.confirmed), flags, included: flags.length === 0, decision: flags.length ? 'Sinalizado e excluído por domínio físico ou unidade incompatível; revisão necessária' : null });
+      observations.push({ id: `${sourceId}:${rowNumber}:${parameter}`, sourceId, rowNumber, timestamp, originalTime: String(originalTime), originalSerial: typeof originalTime === 'number' ? originalTime : null, originalDateSystem: typeof originalTime === 'number' ? (date1904 ? '1904' : '1900') : null, originalValue: row[column], originalSensorId: mapping.sensor ? String(row[mapping.sensor] ?? '').trim() || null : sourceSensorId, sensorId: declaredId, parameter, value, unit, originalUnit: mapping.format === 'long' && mapping.unit ? unit : null, unitSource: mapping.format === 'long' && mapping.unit ? 'file' : 'context', unitConfirmed: Boolean(context.units?.[parameter]?.confirmed), flags, included: flags.length === 0, decision: flags.length ? 'Sinalizado e excluído por domínio físico ou unidade incompatível; revisão necessária' : null });
     }
     if (!found) rejectedRows++;
   }
@@ -118,11 +143,28 @@ export function classifyWindow(bin, dataset, config, rule) {
   if (bin.partial) return { eligibility: 'janela_parcial', reason: 'O recorte não inclui toda a janela exigida.', comparison: null };
   if (bin.coverage == null) return { eligibility: 'frequencia_pendente', reason: 'Informe a frequência nominal para calcular cobertura temporal.', comparison: null };
   if (bin.coverage < rule.minCoverage) return { eligibility: 'dados_insuficientes', reason: `Cobertura ${Math.round(bin.coverage * 100)}% inferior ao critério ${Math.round(rule.minCoverage * 100)}% da referência selecionada.`, comparison: null };
-  if (rule.requiresOutdoor && !Number.isFinite(config.outdoorCo2)) return { eligibility: 'contexto_pendente', reason: 'A comparação exige CO₂ externo e esse dado não foi informado.', comparison: null };
-  const value = rule.requiresOutdoor ? bin.mean - config.outdoorCo2 : bin.mean;
+  let value = bin.mean;
+  if (rule.requiresOutdoor) {
+    if (config.parameter !== 'CO2') return { eligibility: 'contexto_pendente', reason: 'A diferença com concentração externa está disponível somente para CO₂.', comparison: null };
+    const outdoor = config.outdoor ?? (config.outdoorCo2 != null ? { value: config.outdoorCo2, unit: 'ppm', source: 'Contexto externo legado, declarado em ppm' } : null);
+    if (!outdoor || !Number.isFinite(outdoor.value) || outdoor.value < 0) return { eligibility: 'contexto_pendente', reason: 'Informe CO₂ externo finito e não negativo, com unidade e origem documentadas.', comparison: null };
+    if (typeof outdoor.source !== 'string' || !outdoor.source.trim()) return { eligibility: 'contexto_pendente', reason: 'Documente a origem da concentração externa antes de comparar.', comparison: null };
+    const converted = convertCo2(outdoor.value, outdoor.unit, dataset.units[config.parameter].unit);
+    if (converted == null) return { eligibility: 'contexto_pendente', reason: 'Unidade externa incompatível ou conversão não representável. CO₂ aceita ppm, ppb e %.', comparison: null };
+    value = bin.mean - converted;
+    if (!Number.isFinite(value)) return { eligibility: 'contexto_pendente', reason: 'A diferença de concentrações excede a faixa numérica representável.', comparison: null };
+  }
   return { eligibility: 'admissivel', reason: rule.synthetic ? 'Critério sintético de demonstração; sem valor normativo.' : 'Condições documentadas desta regra atendidas.', comparison: value > rule.threshold ? 'acima' : 'ate_referencia', comparedValue: value };
 }
+export function convertCo2(value, sourceUnit, targetUnit) {
+  const factors = { ppm: 1, ppb: .001, '%': 10000 };
+  const source = factors[String(sourceUnit ?? '').trim().toLowerCase()], target = factors[String(targetUnit ?? '').trim().toLowerCase()];
+  if (!Number.isFinite(value) || value < 0 || !source || !target) return null;
+  const converted = value * (source / target);
+  return Number.isFinite(converted) ? converted : null;
+}
 export function analyze(dataset, config, rule = null) {
+  if (dataset.sensorId && dataset.observations.some(o => o.sensorId !== dataset.sensorId)) throw new Error('O caso contém observações de outro sensor. Separe os sensores antes de analisar.');
   const parameter = config.parameter;
   const selected = dataset.observations.filter(o => o.parameter === parameter && o.timestamp >= config.start && o.timestamp < config.end);
   const accepted = selected.filter(o => o.included && o.unit === dataset.units[parameter]?.unit);
@@ -148,11 +190,17 @@ export function analyze(dataset, config, rule = null) {
   }
   const occupiedTotal = bins.reduce((sum, b) => sum + (b.occupied || 0), 0), expectedTotal = bins.reduce((sum, b) => sum + (b.expected || 0), 0);
   const eligible = bins.filter(b => b.eligibility === 'admissivel'), above = eligible.filter(b => b.comparison === 'acima');
-  const summary = stats(accepted.map(o => o.value)), profile = Array.from({ length: 24 }, (_, hour) => ({ hour, n: 0, sum: 0, mean: null }));
-  const step = Math.max(((summary.max ?? 1) - (summary.min ?? 0)) / 16, 1e-6);
-  const histogram = Array.from({ length: 16 }, (_, i) => ({ lower: (summary.min ?? 0) + i * step, upper: (summary.min ?? 0) + (i + 1) * step, n: 0 }));
-  for (const observation of accepted) { const slot = profile[new Date(observation.timestamp + shift).getUTCHours()]; slot.n++; slot.sum += observation.value; histogram[Math.min(15, Math.floor((observation.value - summary.min) / step))].n++; }
-  profile.forEach(p => { p.mean = p.n ? p.sum / p.n : null; delete p.sum; });
+  const summary = stats(accepted.map(o => o.value)), hourlyValues = Array.from({ length: 24 }, () => []);
+  const low = summary.min ?? 0, high = summary.max ?? 1, scale = Math.max(Math.abs(low), Math.abs(high)) || 1;
+  const histogram = Array.from({ length: low === high ? 1 : 16 }, (_, i) => ({ lower: interpolate(low, high, i / (low === high ? 1 : 16)), upper: interpolate(low, high, (i + 1) / (low === high ? 1 : 16)), n: 0 }));
+  const range = high - low, scaledRange = high / scale - low / scale;
+  for (const observation of accepted) {
+    hourlyValues[new Date(observation.timestamp + shift).getUTCHours()].push(observation.value);
+    const fraction = low === high ? 0 : Number.isFinite(range) ? (observation.value - low) / range : (observation.value / scale - low / scale) / scaledRange;
+    const index = Math.max(0, Math.min(histogram.length - 1, Math.floor(fraction * histogram.length)));
+    histogram[index].n++;
+  }
+  const profile = hourlyValues.map((values, hour) => ({ hour, n: values.length, mean: stats(values).mean }));
   return { parameter, unit: dataset.units[parameter]?.unit ?? '', config: { ...config }, rule: rule ? { ...rule } : null, summary, bins, profile, histogram, quality: { inPeriod: selected.length, used: accepted.length, excluded: selected.length - accepted.length, flagged: selected.filter(o => o.flags.length).length, emptyWindows: bins.filter(b => !b.n).length, coverage: expectedTotal ? occupiedTotal / expectedTotal : null, expected: expectedTotal || null, occupied: expectedTotal ? occupiedTotal : null, observedInterval: inferInterval(accepted) }, eligibility: { windows: bins.length, eligible: eligible.length, above: above.length, fractionAbove: eligible.length ? above.length / eligible.length : null }, versions: { software: SOFTWARE_VERSION, method: METHOD_VERSION } };
 }
 export async function sha256(value) {

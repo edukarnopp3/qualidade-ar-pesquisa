@@ -1,13 +1,13 @@
-# Manual da versão 0.1.1
+# Manual da versão 0.1.2
 
 1. Abra a aplicação e escolha importar uma planilha, obter histórico ISEQ, reabrir um pacote ou explorar a demonstração.
-2. Confira aba, data, parâmetros, sensor, ambiente, fuso e unidades. Intervalo nominal depende do instrumento; deixe pendente quando desconhecido. Marque arquivos sintéticos como demonstração.
+2. Confira aba, data, parâmetros, sensor, ambiente, fuso e unidades. Uma aba inválida não impede escolher outra válida. O ID original do sensor não pode ser substituído por outro. Dados sintéticos e reais exigem casos distintos. Intervalo nominal depende do instrumento; deixe pendente quando desconhecido.
 3. Revise o relatório de qualidade. Ao escolher uma leitura de um conflito, registre o motivo; todas as origens permanecem disponíveis.
 4. Abra Análise temporal. Selecione parâmetro, início/fim e média horária/diária; use Aplicar recorte. Os cartões descrevem leituras instantâneas, e o gráfico descreve médias da janela.
-5. Cadastre referência apenas com fonte/requisitos conferidos. Selecione-a no filtro. Sem dados ou contexto suficientes, confira o motivo na tabela.
+5. Cadastre referência apenas com fonte/requisitos conferidos. Selecione-a no filtro. Para uma regra que exige CO₂ externo, use **CO₂ externo do caso** e registre valor não negativo, unidade e fonte/período. Esse contexto pertence ao caso e à execução; cadastrar outra regra não o altera. Sem dados ou contexto suficientes, confira o motivo na tabela.
 6. Exporte PDF para apresentação, Excel/CSV para conferência e pacote completo para arquivo de pesquisa. O compartilhável contém somente os agregados/metadados.
-7. Ao reabrir um pacote, o estado arquivado aparece. Recalcular cria uma nova execução. Fechar/recarregar a página descarta casos que ainda não foram baixados em pacote.
+7. Ao reabrir um pacote, o estado arquivado aparece. A execução selecionada conserva seu contexto, decisões e fontes. Recalcular cria outro ID/data com as entradas dessa execução. Outros itens históricos do pacote conservam resultados agregados; guarde o pacote completo de cada base que quiser reproduzir. Compartilháveis não permitem editar a base ou recalcular. Fechar/recarregar a página descarta casos que ainda não foram baixados em pacote.
 
-ISEQ: o formulário mostra o backend exato antes de enviar login. O serviço do beta armazena históricos e tokens do seu lado conforme sua documentação; esta aplicação não grava senha/sessão. Use Sair da ISEQ ou feche a aba para encerrar a sessão local. Cancelar espera interrompe o navegador; não cancela necessariamente o trabalho já criado no backend.
+ISEQ: o formulário mostra o backend exato antes de enviar login. O serviço do beta armazena históricos e tokens do seu lado conforme sua documentação; esta aplicação não grava senha/sessão. Cada requisição, incluindo leitura da resposta, tem prazo de 45 segundos; a operação histórica inteira tem limite de 20 minutos. O progresso mostra tempo decorrido e **Cancelar espera**. Fechar o modal interrompe a espera; resposta tardia não substitui outro formulário. Timeout/erro libera o botão. Sessão expirada retorna ao login; conta sem sensores oferece atualizar/sair. **Sair da ISEQ** encerra a sessão local imediatamente; revogação remota tem prazo de 8 segundos. Cancelar espera não cancela necessariamente o trabalho já criado no backend.
 
 Erro de formato: confira aba e cabeçalhos. Erro de CORS/rede: confira o backend e origem permitida, ou exporte da ISEQ e importe Excel. Limite de memória/tamanho: use arquivos/períodos menores. A falta de parâmetro não representa valor zero.
