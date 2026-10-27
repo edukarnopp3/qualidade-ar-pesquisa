@@ -1,6 +1,6 @@
 # Qualidade do ar — análise histórica
 
-Ferramenta de pesquisa de Eduardo para análise histórica rastreável de sensores em uma escola e em ambiente hospitalar. Versão **0.1.3**, com diagnóstico de tempos e progresso/cache ISEQ, após as correções da auditoria funcional. Avaliação científica e aplicação com dados reais pendentes.
+Ferramenta de pesquisa de Eduardo para análise histórica rastreável de sensores em uma escola e em ambiente hospitalar. Versão **0.1.4**, com histórico ISEQ sem limite total de duração, cancelamento manual e diagnóstico de progresso/cache. Avaliação científica e aplicação com dados reais pendentes.
 
 **[Abrir a aplicação](https://edukarnopp3.github.io/qualidade-ar-pesquisa/)** · [Estado da entrega](docs/EXECUCAO.md) · [Plano de pesquisa e software](docs/pesquisa/PLANO.md)
 
@@ -39,6 +39,7 @@ Entrega de desempenho e seus limites: [docs/ISEQ-0.1.3.md](docs/ISEQ-0.1.3.md). 
 ## Documentação
 
 - [Execução, estado e pendências](docs/EXECUCAO.md)
+- [Histórico ISEQ sem limite total — versão 0.1.4](docs/ISEQ-0.1.4.md)
 - [Correções e evidências da versão 0.1.2](docs/CORRECOES-0.1.2.md)
 - [Conexão, cache e diagnóstico ISEQ da versão 0.1.3](docs/ISEQ-0.1.3.md)
 - [Plano integrado de pesquisa e software](docs/pesquisa/PLANO.md)

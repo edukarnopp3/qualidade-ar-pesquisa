@@ -104,3 +104,11 @@ Com os acessos ao Render e Supabase realizados pelo usuário, os logs confirmara
 ## Nova verificação e retomada — 27/10/2026
 
 O site abriu e processou a demonstração, mas o endpoint do backend voltou a expirar. O Supabase confirmou o banco da ISEQ em estado `INACTIVE`; ele foi retomado até `ACTIVE_HEALTHY`, com consulta de prontidão aprovada. Após uma demora adicional de inicialização, o backend recuperou HTTP 200 em 0,32 s, com PostgreSQL persistente e autenticação pronta. CORS e preflight do login para GitHub Pages também responderam HTTP 200. O pesquisador acessou o Render e os logs mostraram o servidor iniciado e chamadas de saúde HTTP 200; não houve reinício/deploy manual. Os 14 testes específicos de exportação/pacotes passaram. Download pelo navegador e fluxo real da ISEQ continuam sem confirmação. [Registro atual e limites](RECUPERACAO-ISEQ-2026-10-27.md).
+
+## Histórico sem prazo total — 0.1.4, 27/10/2026
+
+Atendendo ao pedido de Eduardo, foi removido o prazo total padrão de 20 minutos da operação ISEQ. O aplicativo aguarda o histórico enquanto o serviço responde, preservando cancelamento manual e limite de 45 segundos por requisição. O método analítico e o backend beta não foram alterados. [Comportamento e limites](ISEQ-0.1.4.md).
+
+Os **119 testes passaram**, incluindo conclusão após 25 minutos simulados, cancelamento após 21 minutos e timeout de uma requisição sem resposta aos 45 segundos. O build de produção foi concluído com 808 módulos. [Saída integral dos testes](evidencias/v0.1.4/testes-finais.txt).
+
+No navegador, o build 0.1.4 conectado exclusivamente à fixture local confirmou o novo texto, progresso, cancelamento com recuperação do botão e nova tentativa concluída até a conferência de 288 linhas sintéticas. Nenhum erro de console foi registrado nesse fluxo. Não foram usadas credenciais nem medições reais. Uma aba antiga precisa ser recarregada para usar a mudança, após salvar análises e concluir/cancelar eventual operação em andamento.

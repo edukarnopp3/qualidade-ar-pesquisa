@@ -1,5 +1,7 @@
 # Integração ISEQ — versão 0.1.3
 
+Registro histórico da 0.1.3. Na [versão 0.1.4](ISEQ-0.1.4.md), o limite total de 20 minutos descrito abaixo foi removido por solicitação de Eduardo; os prazos por requisição, prontidão e logout permanecem.
+
 ## Entrega
 
 A conexão agora consulta a prontidão do serviço antes de enviar o login. O histórico apresenta etapas concluídas, dados reutilizados do cache e consultas novas. Um diagnóstico transitório mede o tempo do serviço, entrada/lista de sensores, criação do job, espera pela coleta, download e preparação local.

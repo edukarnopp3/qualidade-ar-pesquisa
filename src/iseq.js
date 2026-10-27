@@ -76,11 +76,11 @@ function abortScope(externalSignal, timeoutMs, timeoutError) {
   const abort = () => controller.abort(cancellation(externalSignal.reason));
   if (externalSignal?.aborted) abort();
   else externalSignal?.addEventListener('abort', abort, { once: true });
-  const timer = setTimeout(() => controller.abort(timeoutError), timeoutMs);
+  const timer = timeoutMs === null ? null : setTimeout(() => controller.abort(timeoutError), timeoutMs);
   return {
     signal: controller.signal,
     dispose() {
-      clearTimeout(timer);
+      if (timer !== null) clearTimeout(timer);
       externalSignal?.removeEventListener('abort', abort);
     },
   };
@@ -128,7 +128,7 @@ export class IseqClient {
     this.fetcher = fetcher.bind(globalThis);
     this.#settings = {
       requestTimeoutMs: positiveDuration(options.requestTimeoutMs ?? 45000, 'requisição'),
-      operationTimeoutMs: positiveDuration(options.operationTimeoutMs ?? 1200000, 'operação'),
+      operationTimeoutMs: options.operationTimeoutMs == null ? null : positiveDuration(options.operationTimeoutMs, 'operação'),
       logoutTimeoutMs: positiveDuration(options.logoutTimeoutMs ?? 8000, 'encerramento remoto'),
       pollIntervalMs: positiveDuration(options.pollIntervalMs ?? 2500, 'intervalo de consulta'),
       healthTimeoutMs: positiveDuration(options.healthTimeoutMs ?? 90000, 'prontidão do serviço'),
@@ -248,7 +248,8 @@ export class IseqClient {
 
   async #operation(signal, work) {
     const duration = this.#settings.operationTimeoutMs;
-    const scope = abortScope(signal, duration, new IseqError(`A operação excedeu ${Math.ceil(duration / 60000)} minuto(s). Reduza o período e tente novamente.`, 'operation_timeout'));
+    const timeoutError = duration === null ? undefined : new IseqError(`A operação excedeu ${Math.ceil(duration / 60000)} minuto(s). Reduza o período e tente novamente.`, 'operation_timeout');
+    const scope = abortScope(signal, duration, timeoutError);
     try { return await guarded(scope.signal, () => work(scope.signal)); }
     finally { scope.dispose(); }
   }

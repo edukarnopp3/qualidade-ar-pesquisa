@@ -1,5 +1,9 @@
 # Histórico
 
+## 0.1.4 — 27/10/2026
+
+Removido o limite total padrão de 20 minutos do cliente ISEQ. Históricos longos continuam aguardando enquanto as consultas respondem, com cancelamento manual e prazo de 45 segundos por requisição preservados. Atualizados texto do formulário, manual e versão visível; adicionadas regressões com relógio simulado para ultrapassar 20 minutos, cancelar e detectar requisição travada. [Detalhes e limites](docs/ISEQ-0.1.4.md).
+
 ## Decisão de armazenamento híbrido — 27/10/2026
 
 Acordado aproveitar a capacidade segura da nuvem e continuar novos históricos no computador autorizado de cada pessoa. Documentados orçamento com margem, gravação verificada, preservação dos dados existentes, dependências do conector e critérios de aceite. Planejamento ainda não implementado. [Especificação](docs/PLANO-ARMAZENAMENTO-HIBRIDO.md).
