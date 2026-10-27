@@ -1,5 +1,9 @@
 # Histórico
 
+## 0.1.5 — 27/10/2026
+
+Gráficos adaptados à referência visual do TCC indicado por Eduardo: faixa mínimo–máximo na série temporal; média, mediana e extremos no perfil horário; boxplot descritivo por dia da semana. Acrescentadas tabelas e exportação dos agregados, validação e compatibilidade de pacotes antigos. PDF inclui faixa e extremos por janela. Histograma preservado; barra de presença temporal ajustada para não ultrapassar o painel em séries densas. [Método, convenções e limites](docs/GRAFICOS-0.1.5.md).
+
 ## 0.1.4 — 27/10/2026
 
 Removido o limite total padrão de 20 minutos do cliente ISEQ. Históricos longos continuam aguardando enquanto as consultas respondem, com cancelamento manual e prazo de 45 segundos por requisição preservados. Atualizados texto do formulário, manual e versão visível; adicionadas regressões com relógio simulado para ultrapassar 20 minutos, cancelar e detectar requisição travada. [Detalhes e limites](docs/ISEQ-0.1.4.md).

@@ -113,6 +113,27 @@ function validateAnalysis(analysis) {
     if (bin.comparison !== null && bin.eligibility !== 'admissivel') fail('comparação sem elegibilidade');
   }
   if (analysis.profile !== undefined) { list(analysis.profile, 'perfil', 24); const hours = new Set(); for (const entry of analysis.profile) { object(entry, 'perfil'); integer(entry.hour, 'hora'); if (entry.hour > 23 || hours.has(entry.hour)) fail('hora'); hours.add(entry.hour); integer(entry.n, 'N do perfil'); finite(entry.mean, 'média do perfil', true); } }
+  for (const entry of analysis.profile || []) if (['min', 'median', 'max'].some(key => Object.hasOwn(entry, key))) {
+    for (const key of ['min', 'median', 'max']) finite(entry[key], `perfil.${key}`, true);
+    if (!entry.n && [entry.min, entry.mean, entry.median, entry.max].some(v => v !== null)) fail('perfil vazio');
+    if (entry.n) {
+      if ([entry.min, entry.mean, entry.median, entry.max].some(v => v === null) || entry.min > entry.median || entry.median > entry.max) fail('perfil contraditório');
+      const tolerance = Math.max(Number.MIN_VALUE, Math.max(Math.abs(entry.min), Math.abs(entry.max)) * STATS_RANGE_RELATIVE_TOLERANCE);
+      if (entry.mean < entry.min - tolerance || entry.mean > entry.max + tolerance) fail('média do perfil fora dos extremos');
+    }
+  }
+  if (analysis.weekdays !== undefined) {
+    list(analysis.weekdays, 'dias da semana', 7); if (analysis.weekdays.length !== 7) fail('dias da semana incompletos');
+    const days = new Set();
+    for (const entry of analysis.weekdays) {
+      object(entry, 'dia da semana'); integer(entry.day, 'dia'); integer(entry.n, 'N do dia');
+      if (entry.day > 6 || days.has(entry.day)) fail('dia da semana'); days.add(entry.day);
+      const values = ['min', 'q1', 'median', 'q3', 'max'].map(key => { finite(entry[key], `dia.${key}`, true); return entry[key]; });
+      if (!entry.n && values.some(v => v !== null)) fail('dia vazio');
+      if (entry.n && (values.some(v => v === null) || values.some((v, i) => i > 0 && v < values[i - 1]))) fail('quartis do dia contraditórios');
+    }
+    if (analysis.weekdays.reduce((sum, entry) => sum + entry.n, 0) !== analysis.summary.n) fail('total por dia da semana');
+  }
   if (analysis.profile?.length && analysis.histogram === undefined) fail('distribuição ausente para o perfil');
   if (analysis.histogram !== undefined) {
     list(analysis.histogram, 'distribuição', 1000);
@@ -166,10 +187,11 @@ function sharedDataset(dataset) {
 }
 function sharedRun(run) {
   const clean = pick(run, ['id', 'datasetId', 'sensorId', 'caseName', 'createdAt', 'offsetMinutes', 'reproductionStatus', 'legacyContext']);
-  clean.analysis = pick(run.analysis, ['parameter', 'unit', 'rule', 'summary', 'bins', 'profile', 'histogram', 'quality', 'eligibility', 'versions']);
+  clean.analysis = pick(run.analysis, ['parameter', 'unit', 'rule', 'summary', 'bins', 'profile', 'weekdays', 'histogram', 'quality', 'eligibility', 'versions']);
   clean.analysis.summary = pick(run.analysis.summary, ['n', 'mean', 'median', 'min', 'max', 'p95', 'sd']);
   clean.analysis.bins = run.analysis.bins.map(bin => pick(bin, ['start', 'end', 'label', 'n', 'mean', 'median', 'min', 'max', 'p95', 'sd', 'expected', 'occupied', 'coverage', 'partial', 'unitMismatch', 'unitUnconfirmed', 'eligibility', 'reason', 'comparison', 'comparedValue']));
-  if (run.analysis.profile) clean.analysis.profile = run.analysis.profile.map(entry => pick(entry, ['hour', 'n', 'mean']));
+  if (run.analysis.profile) clean.analysis.profile = run.analysis.profile.map(entry => pick(entry, ['hour', 'n', 'mean', 'median', 'min', 'max']));
+  if (run.analysis.weekdays) clean.analysis.weekdays = run.analysis.weekdays.map(entry => pick(entry, ['day', 'n', 'min', 'q1', 'median', 'q3', 'max']));
   if (run.analysis.histogram) clean.analysis.histogram = run.analysis.histogram.map(entry => pick(entry, ['lower', 'upper', 'n']));
   clean.analysis.quality = pick(run.analysis.quality, ['inPeriod', 'used', 'excluded', 'flagged', 'emptyWindows', 'coverage', 'expected', 'occupied', 'observedInterval']);
   clean.analysis.eligibility = pick(run.analysis.eligibility, ['windows', 'eligible', 'above', 'fractionAbove']);

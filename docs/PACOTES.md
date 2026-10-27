@@ -12,6 +12,8 @@ Reabertura verifica estrutura, hashes, tipos, números finitos e vínculos de ca
 
 Na versão 0.1.3, os diagnósticos de tempos ISEQ também ficam apenas em memória e são descartados no logout/recarregamento. Eles não fazem parte de casos, arquivos originais ou pacotes; o esquema e os dados preservados do pacote não mudaram.
 
+Desde a 0.1.5, `analysis.profile` pode conter `min`, `median` e `max`, além de `hour`, `n` e `mean`. O grupo opcional `analysis.weekdays` guarda sete entradas, com `day` de 0 (segunda) a 6 (domingo), `n`, `min`, `q1`, `median`, `q3` e `max`. São resultados agregados incluídos também no histórico compartilhável. Tipos, nulos em grupos vazios, ordem dos quartis e soma das contagens são verificados. Legados sem esses campos não são enriquecidos silenciosamente; novas estatísticas exigem outra execução com entradas disponíveis.
+
 ## Limites do contrato 0.1.2
 
 Um único conjunto governa geração e abertura: ZIP de até 80 MiB, conteúdo expandido até 160 MiB, manifesto até 256 KiB, até 1.000 fontes além dos três JSON de dados, até um milhão de observações/ocorrências/decisões, 30 execuções históricas e 20 mil janelas por execução. Caminhos extras, fontes duplicadas ou originais com tamanho/hash divergentes são recusados. Limites de contagem/tamanho não garantem desempenho em todo dispositivo. Pacotes com 148 e 1.000 fontes pequenas e bases históricas têm regressões de ida e volta.

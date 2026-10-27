@@ -1,4 +1,4 @@
-export const SOFTWARE_VERSION = '0.1.4';
+export const SOFTWARE_VERSION = '0.1.5';
 export const METHOD_VERSION = 'descritivo-2';
 export const PARAMETERS = {
   CO2: { label: 'CO₂', unit: 'ppm', color: '#3569a8', dark: '#8eb8eb' },
@@ -190,18 +190,28 @@ export function analyze(dataset, config, rule = null) {
   }
   const occupiedTotal = bins.reduce((sum, b) => sum + (b.occupied || 0), 0), expectedTotal = bins.reduce((sum, b) => sum + (b.expected || 0), 0);
   const eligible = bins.filter(b => b.eligibility === 'admissivel'), above = eligible.filter(b => b.comparison === 'acima');
-  const summary = stats(accepted.map(o => o.value)), hourlyValues = Array.from({ length: 24 }, () => []);
+  const summary = stats(accepted.map(o => o.value)), hourlyValues = Array.from({ length: 24 }, () => []), weekdayValues = Array.from({ length: 7 }, () => []);
   const low = summary.min ?? 0, high = summary.max ?? 1, scale = Math.max(Math.abs(low), Math.abs(high)) || 1;
   const histogram = Array.from({ length: low === high ? 1 : 16 }, (_, i) => ({ lower: interpolate(low, high, i / (low === high ? 1 : 16)), upper: interpolate(low, high, (i + 1) / (low === high ? 1 : 16)), n: 0 }));
   const range = high - low, scaledRange = high / scale - low / scale;
   for (const observation of accepted) {
-    hourlyValues[new Date(observation.timestamp + shift).getUTCHours()].push(observation.value);
+    const localTime = new Date(observation.timestamp + shift);
+    hourlyValues[localTime.getUTCHours()].push(observation.value);
+    weekdayValues[(localTime.getUTCDay() + 6) % 7].push(observation.value);
     const fraction = low === high ? 0 : Number.isFinite(range) ? (observation.value - low) / range : (observation.value / scale - low / scale) / scaledRange;
     const index = Math.max(0, Math.min(histogram.length - 1, Math.floor(fraction * histogram.length)));
     histogram[index].n++;
   }
-  const profile = hourlyValues.map((values, hour) => ({ hour, n: values.length, mean: stats(values).mean }));
-  return { parameter, unit: dataset.units[parameter]?.unit ?? '', config: { ...config }, rule: rule ? { ...rule } : null, summary, bins, profile, histogram, quality: { inPeriod: selected.length, used: accepted.length, excluded: selected.length - accepted.length, flagged: selected.filter(o => o.flags.length).length, emptyWindows: bins.filter(b => !b.n).length, coverage: expectedTotal ? occupiedTotal / expectedTotal : null, expected: expectedTotal || null, occupied: expectedTotal ? occupiedTotal : null, observedInterval: inferInterval(accepted) }, eligibility: { windows: bins.length, eligible: eligible.length, above: above.length, fractionAbove: eligible.length ? above.length / eligible.length : null }, versions: { software: SOFTWARE_VERSION, method: METHOD_VERSION } };
+  const profile = hourlyValues.map((values, hour) => {
+    const { n, mean, median, min, max } = stats(values);
+    return { hour, n, mean, median, min, max };
+  });
+  const weekdays = weekdayValues.map((values, day) => {
+    const sorted = values.sort((a, b) => a - b), n = sorted.length;
+    const quantile = p => { const index = (n - 1) * p; return n ? interpolate(sorted[Math.floor(index)], sorted[Math.ceil(index)], index - Math.floor(index)) : null; };
+    return { day, n, min: sorted[0] ?? null, q1: quantile(.25), median: quantile(.5), q3: quantile(.75), max: sorted.at(-1) ?? null };
+  });
+  return { parameter, unit: dataset.units[parameter]?.unit ?? '', config: { ...config }, rule: rule ? { ...rule } : null, summary, bins, profile, weekdays, histogram, quality: { inPeriod: selected.length, used: accepted.length, excluded: selected.length - accepted.length, flagged: selected.filter(o => o.flags.length).length, emptyWindows: bins.filter(b => !b.n).length, coverage: expectedTotal ? occupiedTotal / expectedTotal : null, expected: expectedTotal || null, occupied: expectedTotal ? occupiedTotal : null, observedInterval: inferInterval(accepted) }, eligibility: { windows: bins.length, eligible: eligible.length, above: above.length, fractionAbove: eligible.length ? above.length / eligible.length : null }, versions: { software: SOFTWARE_VERSION, method: METHOD_VERSION } };
 }
 export async function sha256(value) {
   const bytes = typeof value === 'string' ? new TextEncoder().encode(value) : value;

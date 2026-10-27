@@ -1,4 +1,4 @@
-# Manual da versão 0.1.4
+# Manual da versão 0.1.5
 
 1. Abra a aplicação e escolha importar uma planilha, obter histórico ISEQ, reabrir um pacote ou explorar a demonstração.
 2. Confira aba, data, parâmetros, sensor, ambiente, fuso e unidades. Uma aba inválida não impede escolher outra válida. O ID original do sensor não pode ser substituído por outro. Dados sintéticos e reais exigem casos distintos. Intervalo nominal depende do instrumento; deixe pendente quando desconhecido.
@@ -13,3 +13,9 @@ ISEQ: o formulário mostra o backend exato antes de enviar login. Após confirma
 Abra **Tempos desta operação** ou os resumos das últimas operações para identificar em que etapa ocorreu a espera. **Copiar diagnóstico** copia somente tempos, status e contagens; se a cópia não estiver disponível, o texto pode ser selecionado. Os resumos vivem apenas na memória da página e não incluem conta, senha, sessão, sensor, período ou leituras. Não fazem parte dos pacotes de pesquisa. [Conexão e diagnóstico](ISEQ-0.1.3.md) e [remoção do prazo total na 0.1.4](ISEQ-0.1.4.md).
 
 Erro de formato: confira aba e cabeçalhos. Erro de CORS/rede: confira o backend e origem permitida, ou exporte da ISEQ e importe Excel. Limite de memória/tamanho: use arquivos/períodos menores. A falta de parâmetro não representa valor zero.
+
+## Ler os gráficos de média e extremos
+
+A série temporal mostra a média por hora/dia e a faixa das menores e maiores leituras incluídas em cada janela. O perfil diurno reúne leituras da mesma hora local em dias diferentes, com média, mediana e faixa mínimo–máximo. A faixa não representa intervalo de confiança. As lacunas permanecem vazias.
+
+O boxplot por dia da semana mostra Q1–Q3 na caixa, mediana no traço e mínimo–máximo nas hastes, incluindo extremos. Os valores estão nas tabelas expansíveis sob os gráficos e no Excel. Um grupo sem leituras não vira zero. Pacotes antigos podem não ter essas estatísticas: recalcular com os originais cria uma nova execução. [Detalhes](GRAFICOS-0.1.5.md).

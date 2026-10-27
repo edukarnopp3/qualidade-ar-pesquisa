@@ -12,6 +12,8 @@ Duplicatas idênticas preservam todas as entradas e usam a primeira por padrão.
 
 Estatísticas das leituras: média aritmética, mediana e percentil por interpolação linear de ordem `(n−1)p`, min/max e desvio padrão populacional descritivo. Gráfico principal: média aritmética das leituras incluídas em cada hora/dia local. Não há média ponderada temporal ou inferência de exposição.
 
+Desde o software 0.1.5, a série temporal inclui faixa mínimo–máximo por janela e o perfil horário mostra média, mediana e extremos de todas as leituras incluídas na mesma hora local. O boxplot por dia da semana reúne leituras aceitas do recorte, de segunda a domingo, com Q1/Q3 calculados pela mesma interpolação dos percentis. Caixa Q1–Q3, traço mediano e hastes mínimo–máximo, incluindo extremos; não usa a convenção de 1,5 IQR nem classifica outliers. Grupos vazios permanecem nulos. A faixa não é intervalo de confiança. [Referência visual, convenções e compatibilidade](GRAFICOS-0.1.5.md).
+
 Cobertura: janela particionada em slots da frequência nominal confirmada; conta-se presença de pelo menos uma leitura utilizável por slot. Observações repetidas dentro do mesmo slot não aumentam cobertura. Frequência observada é diagnóstico independente e não substitui confirmação nominal. Janelas sem dados são criadas e ficam nulas no gráfico. Recortes parciais não recebem comparação para uma janela normativa completa.
 
 Unidades diferentes não são misturadas na média. Unidades declaradas no contexto podem ser revisadas, com decisão registrada; valores originais e unidades explícitas de arquivo não são convertidos silenciosamente.

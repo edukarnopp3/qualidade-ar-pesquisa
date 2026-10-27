@@ -112,3 +112,13 @@ Atendendo ao pedido de Eduardo, foi removido o prazo total padrão de 20 minutos
 Os **119 testes passaram**, incluindo conclusão após 25 minutos simulados, cancelamento após 21 minutos e timeout de uma requisição sem resposta aos 45 segundos. O build de produção foi concluído com 808 módulos. [Saída integral dos testes](evidencias/v0.1.4/testes-finais.txt).
 
 No navegador, o build 0.1.4 conectado exclusivamente à fixture local confirmou o novo texto, progresso, cancelamento com recuperação do botão e nova tentativa concluída até a conferência de 288 linhas sintéticas. Nenhum erro de console foi registrado nesse fluxo. Não foram usadas credenciais nem medições reais. Uma aba antiga precisa ser recarregada para usar a mudança, após salvar análises e concluir/cancelar eventual operação em andamento.
+
+## Adaptação dos gráficos ao TCC — 0.1.5, 27/10/2026
+
+Foi lido localmente o Word `tcc_final_atualizado (Reparado).docx`, indicado por Eduardo, e conferidas as figuras de análise estatística. Implementados faixa mínimo–máximo na série temporal, média/mediana/extremos no perfil diurno e boxplot por dia da semana, preservando o histograma como complemento. A variante do boxplot usa hastes mínimo–máximo, explicitadas na interface. O original do TCC e suas imagens/medições não foram incluídos no repositório. [Referência visual, convenções e limites](GRAFICOS-0.1.5.md).
+
+Excel e pacotes preservam os novos agregados; o PDF inclui faixa e tabela de extremos/mediana. Pacotes antigos conservam as estatísticas arquivadas, sem preenchimento artificial. A alteração mantém o método `descritivo-2` e o conector ISEQ sem prazo total padrão.
+
+**124/124 testes aprovados**, incluindo cinco regressões novas com quartis de gabarito independente, recorte/fuso, exclusões, valores negativos/lacunas, exportação, pacote compartilhável e legado. Build de produção concluído com 810 módulos. [Saída integral](evidencias/v0.1.5/testes-finais.txt).
+
+No navegador local, foram exercitados CO₂ horário com lacunas e PM₂,₅ diário, recorte de um só dia, temas claro/escuro e tabelas de 24 horas e sete dias. Quatro gráficos renderizados sem erro no fluxo final. O caso de categorias vazias encontrado na inspeção foi corrigido e revalidado. Barra temporal densa permanece no painel e não houve rolagem horizontal global na largura testada. PDF sintético renderizado em duas páginas; ajustado também o rótulo PM₂,₅ para a fonte do PDF. Publicação pelo workflow existente; as abas com análises do pesquisador não são recarregadas automaticamente.
