@@ -1,8 +1,10 @@
-# Execução — registros de 08 e 09/10/2026
+# Execução — registros de 08 a 27/10/2026
 
 ## Decisões aprovadas
 
 App por link; análise histórica local; escola/hospital em casos independentes; Excel e histórico ISEQ como entradas; painel, PDF, tabela e pacotes reabríveis; sistema visual vigente do Nexo e cores próprias para séries; documentação integrada à entrega.
+
+Em 27/10/2026, Eduardo acordou usar a capacidade segura da nuvem e continuar os próximos históricos no computador autorizado de cada pessoa. Foram registrados orçamento com margem, gravação verificada, cobertura por destino, dependências do conector e critérios de aceite no [plano de armazenamento híbrido](PLANO-ARMAZENAMENTO-HIBRIDO.md). Essa etapa é documental; o novo modo ainda não foi implementado.
 
 ## Implementado em 0.1.0
 
@@ -98,3 +100,7 @@ Código funcional `41e8f6605de19f43239e1254cdd00070a340ebd0`, [workflow concluí
 ## Incidente real da ISEQ — 09/10/2026
 
 Com os acessos ao Render e Supabase realizados pelo usuário, os logs confirmaram falha de conexão PostgreSQL/Supabase: `ENOTFOUND tenant/user not found`, durante a inicialização do backend. O projeto correto estava pausado. Foram solicitadas sua retomada e o reinício do mesmo código do backend. O Supabase confirmou restauração concluída e estado Healthy; saúde pública respondeu HTTP 200 em 41,62 s e depois em 0,42 s, com armazenamento PostgreSQL persistente e autenticação pronta. CORS e preflight do login para a origem GitHub Pages também responderam HTTP 200. Não foi necessário alterar URI, código ou plano. Login/listagem/consulta real da ISEQ e conferência dos históricos ainda dependem da validação do pesquisador. [Registro sanitizado da recuperação](INCIDENTE-ISEQ-2026-10-09.md).
+
+## Nova verificação e retomada — 27/10/2026
+
+O site abriu e processou a demonstração, mas o endpoint do backend voltou a expirar. O Supabase confirmou o banco da ISEQ em estado `INACTIVE`; ele foi retomado até `ACTIVE_HEALTHY`, com consulta de prontidão aprovada. Após uma demora adicional de inicialização, o backend recuperou HTTP 200 em 0,32 s, com PostgreSQL persistente e autenticação pronta. CORS e preflight do login para GitHub Pages também responderam HTTP 200. O pesquisador acessou o Render e os logs mostraram o servidor iniciado e chamadas de saúde HTTP 200; não houve reinício/deploy manual. Os 14 testes específicos de exportação/pacotes passaram. Download pelo navegador e fluxo real da ISEQ continuam sem confirmação. [Registro atual e limites](RECUPERACAO-ISEQ-2026-10-27.md).

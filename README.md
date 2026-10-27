@@ -42,6 +42,7 @@ Entrega de desempenho e seus limites: [docs/ISEQ-0.1.3.md](docs/ISEQ-0.1.3.md). 
 - [Correções e evidências da versão 0.1.2](docs/CORRECOES-0.1.2.md)
 - [Conexão, cache e diagnóstico ISEQ da versão 0.1.3](docs/ISEQ-0.1.3.md)
 - [Plano integrado de pesquisa e software](docs/pesquisa/PLANO.md)
+- [Plano de armazenamento híbrido — nuvem e computador](docs/PLANO-ARMAZENAMENTO-HIBRIDO.md) — direção acordada, implementação pendente.
 - [Método computacional](docs/METODO.md)
 - [Interface e tokens Nexo](docs/DESIGN-SYSTEM.md)
 - [Manual de uso](docs/MANUAL.md)

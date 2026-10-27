@@ -5,6 +5,8 @@
 **Programa pretendido:** Mestrado Profissional em Tecnologia e Ambiente (PPGTA), IFC Campus Araquari.  
 **Status:** primeira implementação funcional 0.1.0 executada em projeto separado; verificações controladas e de interface concluídas; autenticação histórica real ISEQ, documentação dos sensores e referências científicas permanecem pendentes.
 
+**Adendo técnico — 27/10/2026:** acordada a evolução para armazenamento híbrido: aproveitar a cota segura do banco da ISEQ e continuar novos históricos no computador autorizado pela pessoa. Contratos, dependências, etapas e critérios de aceite estão no [plano de armazenamento híbrido](../PLANO-ARMAZENAMENTO-HIBRIDO.md). A implementação ainda está pendente; o recorte e a avaliação científica permanecem os mesmos.
+
 ## 1. Proposta em uma página
 
 **Título provisório:** Desenvolvimento e avaliação de um método rastreável para interpretação de séries históricas de qualidade do ar interior: aplicações em uma escola e um ambiente hospitalar.

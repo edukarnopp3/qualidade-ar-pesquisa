@@ -1,5 +1,13 @@
 # Histórico
 
+## Decisão de armazenamento híbrido — 27/10/2026
+
+Acordado aproveitar a capacidade segura da nuvem e continuar novos históricos no computador autorizado de cada pessoa. Documentados orçamento com margem, gravação verificada, preservação dos dados existentes, dependências do conector e critérios de aceite. Planejamento ainda não implementado. [Especificação](docs/PLANO-ARMAZENAMENTO-HIBRIDO.md).
+
+## Retomada operacional ISEQ — 27/10/2026
+
+Banco existente da ISEQ encontrado `INACTIVE` e retomado até `ACTIVE_HEALTHY`, com consulta de prontidão aprovada. Backend recuperado, saúde HTTP 200 em 0,32 s, PostgreSQL persistente/autenticação pronta e CORS/preflight aprovados. Logs conferidos após acesso do pesquisador, sem reinício/deploy manual. Os 14 testes específicos de exportação/pacotes passaram; salvamento pelo navegador e fluxo real da ISEQ ainda pendentes. Sem nova versão funcional. [Registro e limites](docs/RECUPERACAO-ISEQ-2026-10-27.md).
+
 ## Recuperação operacional ISEQ — 09/10/2026
 
 Identificada pausa no Supabase como causa real da falha de inicialização do backend. Banco existente retomado e serviço reiniciado com o mesmo código. Saúde HTTP 200, PostgreSQL persistente, autenticação pronta e CORS para GitHub Pages confirmados; consulta seguinte em 0,42 s. Sem alteração funcional da versão 0.1.3 ou contratação de plano. Login/listagem/consulta real da ISEQ ainda aguardam o pesquisador. [Registro do incidente e limites](docs/INCIDENTE-ISEQ-2026-10-09.md).
